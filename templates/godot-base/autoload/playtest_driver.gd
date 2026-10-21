@@ -18,6 +18,14 @@ extends Node
 ##   {"t": 2.0, "do": "expect_bus_muted", "bus": "Music", "value": true}
 ##   {"t": 0.1, "do": "setting", "key": "level_unlocked", "value": 14}   seeds a Settings value (playtests are ephemeral; used to stage store screenshots)
 ## Failures are logged as "[playtest][FAIL] ..." and make playtest.sh exit non-zero.
+##
+## Animation is off during playtests so rules cannot depend on it, which also hides particles, labels and
+## flashes from captured marks (lesson 0027). A game therefore exposes `set_fx(value)` on its "game" node, and
+## capture runs (clips, store screenshots, juice review) turn effects back on as their first step:
+##   {"t": 0.1, "do": "call", "group": "game", "method": "set_fx", "args": [1.0]}
+## Keep correctness scenarios (effects off) and showcase scenarios (effects on) in separate files rather than
+## making one serve both. Any helper that stages game state for a capture must advance the game itself, or an
+## ordinary tick slips in between staged steps and breaks the sequence being staged.
 
 var _steps: Array = []
 var _elapsed := 0.0

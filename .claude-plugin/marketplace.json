@@ -1,0 +1,17 @@
+{
+  "name": "game-factory",
+  "owner": {
+    "name": "Bahadir Yildirim",
+    "email": "yildirim.bahadir02@gmail.com"
+  },
+  "metadata": {
+    "description": "Verified workflow for polished 2D Godot 4 mobile games — scaffold, art direction, asset pipeline, playtest verification, Definition of Done gate, and store release."
+  },
+  "plugins": [
+    {
+      "name": "game-factory-godot",
+      "source": "./",
+      "description": "Build polished 2D mobile games with Godot 4: verified workflow, UI/audio/juice standards, and a Definition of Done gate."
+    }
+  ]
+}

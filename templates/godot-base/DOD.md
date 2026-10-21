@@ -14,6 +14,7 @@ Last reviewed: YYYY-MM-DD, build/commit: ...
 - [ ] Juice on every interaction (feedback, effects, reward loop); nothing stalls during fast play on the device
 - [ ] Touch targets >= 150 px; HUD inside the safe area; checked at 1080x1920, tall notch and short screens
 - [ ] Levels/content: difficulty is a real decision (shortcut strategy measured), every level proven solvable
+- [ ] Pacing measured, not guessed: time-to-first-death from a no-input run and from a greedy-bot run; a run lasts long enough to show the core mechanic at least twice
 - [ ] Console clean; ASSETS.md lists every external asset with source and license
 - [ ] (only if the game has ads/analytics) rewarded is opt-in with a visible control, interstitial only at a natural pause and never on a failure; a device run with test ads loaded both formats; events appear in Firebase DebugView; settings has the privacy-options button; `dod_check.py --release` passes before a store build
 - [ ] Screenshots of every screen and at least the first, a middle and the last level were looked at

@@ -41,3 +41,10 @@ When the Definition of Done passes and the user says the game is ready (or asks 
 
 ## 4. Verify before saying "done"
 Use the `playtest-verify` skill. A game is not finished until its Definition of Done passes.
+
+### Measure pacing before tuning it (lesson 0026)
+Before balancing anything, measure time-to-first-death twice: a **no-input** run and a **greedy-bot** run. A casual game that
+ends before the player has seen the core mechanic has no clip and no player, so target a run that shows the mechanic at least
+twice. Record both numbers in the GDD and tick the pacing row in `DOD.md`.
+When a playtest assertion about UI state fails, read the mark screenshot before touching UI code: the game is often simply in a
+different state than the scenario assumed (a dead player legitimately does not pause).

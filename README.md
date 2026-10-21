@@ -51,11 +51,10 @@ Run the `doctor` skill after installing; it checks everything and asks before ch
 ## Install
 
 ```
-/plugin marketplace add <owner>/<repo>
-/plugin install game-factory-godot@<marketplace-name>
+/plugin marketplace add yildirimbhdr/godot-game-factory
+/plugin install game-factory-godot@game-factory
 ```
-(Replace with the real repository once it is published.) For local development: `claude --plugin-dir ./game-factory-godot`
-and `/reload-plugins`.
+For local development: `claude --plugin-dir ./godot-game-factory` and `/reload-plugins`.
 
 ## Using it
 

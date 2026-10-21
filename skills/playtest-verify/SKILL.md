@@ -23,6 +23,7 @@ Open the `marks/*.png` files and check: nothing clipped by the notch, nothing ov
 - [ ] Feedback on every interaction (tween/particles/flash/shake/haptic); scene transitions fade
 - [ ] Touch targets >= 150 px, HUD inside `SafeArea` (48 px margin), works on tall and short screens
 - [ ] Auto-pause when the app is backgrounded (`app_background` step passes)
+- [ ] Pacing measured: time-to-first-death from a no-input run and a greedy-bot run; a run shows the core mechanic at least twice
 - [ ] Console clean of errors/warnings from our code; `ASSETS.md` lists every external asset with source and license
 - [ ] Screenshots reviewed by you; tested on a real device when the user has one connected
 
@@ -33,8 +34,18 @@ shapes (`playtest.sh` records a stamp per shape), look at the marks, copy `templ
 what you verified (leave unverified items open and say why; items that need a real device stay open until the user confirms).
 Editing any source file after the review makes the stamps and DOD.md stale on purpose.
 
+## Effects in captures, and staging state (lesson 0027)
+Animation time is zeroed under `--playtest=` so rules cannot depend on it; that also hides particles, combo labels and flashes,
+so a correctness run's marks legitimately show a static board. Do not go hunting anchors or z-order for effects that work.
+A game exposes `set_fx(value)` on its `game` node; a capture run (clip, store screenshot, juice review) re-enables effects as
+its first step: `{"t": 0.1, "do": "call", "group": "game", "method": "set_fx", "args": [1.0]}`. Keep the correctness scenario
+and the showcase scenario in separate files instead of making one serve both. Any helper that stages state for a capture must
+advance the game itself, or an ordinary tick slips in between staged steps and breaks the sequence being staged.
+
 ## When something fails or is flaky
-Find the logged cause; never retry until green. Write a lesson (`lessons-learned` skill) and encode the fix.
+Find the logged cause; never retry until green. If an assertion about UI state fails, read the mark screenshot before changing
+UI code: the game may simply be in a different state than the scenario assumed (a dead player legitimately does not pause -
+lesson 0026). Write a lesson (`lessons-learned` skill) and encode the fix.
 Known harness facts: Movie Maker frame size comes from `override.cfg` (the script handles it); marks use `Engine.get_process_frames()`;
 desktop window focus is ignored in playtests; a fresh project needs two import passes.
 
