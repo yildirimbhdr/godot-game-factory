@@ -1,0 +1,75 @@
+{
+  "name": "scifi-blue",
+  "font": {
+    "pack": "ui-pack-sci-fi",
+    "file": "Font/Kenney Future.ttf"
+  },
+  "font_size": 44,
+  "button": {
+    "normal": {
+      "pack": "ui-pack-sci-fi",
+      "file": "PNG/Blue/Double/bar_round_gloss_large.png",
+      "margins": [
+        24,
+        24,
+        24,
+        24
+      ],
+      "content": [
+        56,
+        16,
+        56,
+        16
+      ]
+    },
+    "pressed": {
+      "pack": "ui-pack-sci-fi",
+      "file": "PNG/Blue/Double/bar_round_gloss_large.png",
+      "margins": [
+        24,
+        24,
+        24,
+        24
+      ],
+      "content": [
+        56,
+        20,
+        56,
+        12
+      ],
+      "tint": "Color(0.7, 0.75, 0.85, 1)"
+    },
+    "disabled": {
+      "pack": "ui-pack-sci-fi",
+      "file": "PNG/Grey/Double/bar_round_gloss_large.png",
+      "margins": [
+        24,
+        24,
+        24,
+        24
+      ],
+      "content": [
+        56,
+        16,
+        56,
+        16
+      ]
+    }
+  },
+  "panel": {
+    "flat": {
+      "bg": "#14203a",
+      "border": "#2fb5ff",
+      "border_width": 4,
+      "radius": 28
+    }
+  },
+  "palette": {
+    "background": "#0e1623",
+    "text": "#e8f6ff",
+    "slider_track": "#0a111b",
+    "slider_fill": "#2fb5ff",
+    "slider_knob": "#e8f6ff"
+  },
+  "upscale": 2
+}

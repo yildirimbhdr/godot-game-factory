@@ -1,0 +1,419 @@
+[
+ {
+  "t": 1.0,
+  "do": "expect_group_count",
+  "group": "btn_play",
+  "min": 1
+ },
+ {
+  "t": 1.2,
+  "do": "mark",
+  "name": "01_menu"
+ },
+ {
+  "t": 1.5,
+  "do": "tap_group",
+  "group": "btn_settings"
+ },
+ {
+  "t": 2.2,
+  "do": "expect_group_count",
+  "group": "btn_vibration",
+  "min": 1
+ },
+ {
+  "t": 2.3,
+  "do": "mark",
+  "name": "02_settings"
+ },
+ {
+  "t": 2.35,
+  "do": "slide",
+  "name": "MusicSlider",
+  "value": 0.0
+ },
+ {
+  "t": 2.4,
+  "do": "expect_bus_muted",
+  "bus": "Music",
+  "value": true
+ },
+ {
+  "t": 2.45,
+  "do": "slide",
+  "name": "SfxSlider",
+  "value": 0.0
+ },
+ {
+  "t": 2.5,
+  "do": "expect_bus_muted",
+  "bus": "SFX",
+  "value": true
+ },
+ {
+  "t": 2.55,
+  "do": "slide",
+  "name": "MusicSlider",
+  "value": 0.8
+ },
+ {
+  "t": 2.6,
+  "do": "slide",
+  "name": "SfxSlider",
+  "value": 1.0
+ },
+ {
+  "t": 2.65,
+  "do": "expect_bus_muted",
+  "bus": "SFX",
+  "value": false
+ },
+ {
+  "t": 3.0,
+  "do": "tap_group",
+  "group": "btn_back"
+ },
+ {
+  "t": 3.5,
+  "do": "tap_group",
+  "group": "btn_play"
+ },
+ {
+  "t": 5.0,
+  "do": "mark",
+  "name": "03_map"
+ },
+ {
+  "t": 5.2,
+  "do": "tap_group",
+  "group": "level_node",
+  "index": 1
+ },
+ {
+  "t": 6.0,
+  "do": "expect_group_count",
+  "group": "level_node",
+  "min": 18,
+  "max": 18
+ },
+ {
+  "t": 6.2,
+  "do": "tap_group",
+  "group": "level_node",
+  "index": 0
+ },
+ {
+  "t": 8.0,
+  "do": "mark",
+  "name": "04_game"
+ },
+ {
+  "t": 8.2,
+  "do": "tap_group",
+  "group": "pause_button"
+ },
+ {
+  "t": 8.8,
+  "do": "expect_paused",
+  "value": true
+ },
+ {
+  "t": 8.9,
+  "do": "mark",
+  "name": "05_pause"
+ },
+ {
+  "t": 9.1,
+  "do": "tap_group",
+  "group": "btn_resume"
+ },
+ {
+  "t": 9.6,
+  "do": "expect_paused",
+  "value": false
+ },
+ {
+  "t": 9.65,
+  "do": "app_background"
+ },
+ {
+  "t": 10.0,
+  "do": "expect_paused",
+  "value": true
+ },
+ {
+  "t": 10.1,
+  "do": "tap_group",
+  "group": "btn_resume"
+ },
+ {
+  "t": 10.5,
+  "do": "expect_paused",
+  "value": false
+ },
+ {
+  "t": 11.0,
+  "do": "call",
+  "group": "game",
+  "method": "autoplay_step"
+ },
+ {
+  "t": 11.6,
+  "do": "call",
+  "group": "game",
+  "method": "autoplay_step"
+ },
+ {
+  "t": 12.2,
+  "do": "call",
+  "group": "game",
+  "method": "autoplay_step"
+ },
+ {
+  "t": 12.8,
+  "do": "call",
+  "group": "game",
+  "method": "autoplay_step"
+ },
+ {
+  "t": 13.4,
+  "do": "call",
+  "group": "game",
+  "method": "autoplay_step"
+ },
+ {
+  "t": 14.0,
+  "do": "call",
+  "group": "game",
+  "method": "autoplay_step"
+ },
+ {
+  "t": 14.6,
+  "do": "call",
+  "group": "game",
+  "method": "autoplay_step"
+ },
+ {
+  "t": 15.2,
+  "do": "call",
+  "group": "game",
+  "method": "autoplay_step"
+ },
+ {
+  "t": 15.8,
+  "do": "call",
+  "group": "game",
+  "method": "autoplay_step"
+ },
+ {
+  "t": 16.4,
+  "do": "call",
+  "group": "game",
+  "method": "autoplay_step"
+ },
+ {
+  "t": 17.0,
+  "do": "call",
+  "group": "game",
+  "method": "autoplay_step"
+ },
+ {
+  "t": 17.6,
+  "do": "call",
+  "group": "game",
+  "method": "autoplay_step"
+ },
+ {
+  "t": 18.2,
+  "do": "call",
+  "group": "game",
+  "method": "autoplay_step"
+ },
+ {
+  "t": 18.8,
+  "do": "call",
+  "group": "game",
+  "method": "autoplay_step"
+ },
+ {
+  "t": 19.4,
+  "do": "call",
+  "group": "game",
+  "method": "autoplay_step"
+ },
+ {
+  "t": 20.0,
+  "do": "call",
+  "group": "game",
+  "method": "autoplay_step"
+ },
+ {
+  "t": 20.6,
+  "do": "call",
+  "group": "game",
+  "method": "autoplay_step"
+ },
+ {
+  "t": 21.2,
+  "do": "call",
+  "group": "game",
+  "method": "autoplay_step"
+ },
+ {
+  "t": 21.8,
+  "do": "call",
+  "group": "game",
+  "method": "autoplay_step"
+ },
+ {
+  "t": 22.4,
+  "do": "call",
+  "group": "game",
+  "method": "autoplay_step"
+ },
+ {
+  "t": 23.0,
+  "do": "call",
+  "group": "game",
+  "method": "autoplay_step"
+ },
+ {
+  "t": 23.6,
+  "do": "call",
+  "group": "game",
+  "method": "autoplay_step"
+ },
+ {
+  "t": 24.2,
+  "do": "call",
+  "group": "game",
+  "method": "autoplay_step"
+ },
+ {
+  "t": 24.8,
+  "do": "call",
+  "group": "game",
+  "method": "autoplay_step"
+ },
+ {
+  "t": 25.4,
+  "do": "call",
+  "group": "game",
+  "method": "autoplay_step"
+ },
+ {
+  "t": 26.0,
+  "do": "call",
+  "group": "game",
+  "method": "autoplay_step"
+ },
+ {
+  "t": 26.6,
+  "do": "call",
+  "group": "game",
+  "method": "autoplay_step"
+ },
+ {
+  "t": 27.2,
+  "do": "call",
+  "group": "game",
+  "method": "autoplay_step"
+ },
+ {
+  "t": 27.8,
+  "do": "call",
+  "group": "game",
+  "method": "autoplay_step"
+ },
+ {
+  "t": 28.4,
+  "do": "call",
+  "group": "game",
+  "method": "autoplay_step"
+ },
+ {
+  "t": 29.0,
+  "do": "call",
+  "group": "game",
+  "method": "autoplay_step"
+ },
+ {
+  "t": 29.6,
+  "do": "call",
+  "group": "game",
+  "method": "autoplay_step"
+ },
+ {
+  "t": 30.2,
+  "do": "call",
+  "group": "game",
+  "method": "autoplay_step"
+ },
+ {
+  "t": 30.8,
+  "do": "call",
+  "group": "game",
+  "method": "autoplay_step"
+ },
+ {
+  "t": 31.4,
+  "do": "call",
+  "group": "game",
+  "method": "autoplay_step"
+ },
+ {
+  "t": 32.0,
+  "do": "call",
+  "group": "game",
+  "method": "autoplay_step"
+ },
+ {
+  "t": 32.6,
+  "do": "call",
+  "group": "game",
+  "method": "autoplay_step"
+ },
+ {
+  "t": 33.2,
+  "do": "call",
+  "group": "game",
+  "method": "autoplay_step"
+ },
+ {
+  "t": 33.8,
+  "do": "call",
+  "group": "game",
+  "method": "autoplay_step"
+ },
+ {
+  "t": 34.4,
+  "do": "call",
+  "group": "game",
+  "method": "autoplay_step"
+ },
+ {
+  "t": 37.5,
+  "do": "expect_text",
+  "text": "Level Clear!"
+ },
+ {
+  "t": 37.6,
+  "do": "mark",
+  "name": "06_level_clear"
+ },
+ {
+  "t": 37.9,
+  "do": "tap_group",
+  "group": "btn_menu"
+ },
+ {
+  "t": 39.2,
+  "do": "expect_text",
+  "text": "Levels"
+ },
+ {
+  "t": 39.3,
+  "do": "mark",
+  "name": "07_map_after"
+ }
+]

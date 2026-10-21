@@ -1,0 +1,62 @@
+[
+ {
+  "t": 1.5,
+  "do": "tap_group",
+  "group": "btn_play"
+ },
+ {
+  "t": 3.2,
+  "do": "tap_group",
+  "group": "level_node",
+  "index": 0
+ },
+ {
+  "t": 5.0,
+  "do": "mark",
+  "name": "start"
+ },
+ {
+  "t": 5.5,
+  "do": "call",
+  "group": "game",
+  "method": "debug_mistake"
+ },
+ {
+  "t": 6.2,
+  "do": "mark",
+  "name": "one_life_lost"
+ },
+ {
+  "t": 6.6,
+  "do": "call",
+  "group": "game",
+  "method": "debug_mistake"
+ },
+ {
+  "t": 7.5,
+  "do": "call",
+  "group": "game",
+  "method": "debug_mistake"
+ },
+ {
+  "t": 9.5,
+  "do": "expect_text",
+  "text": "Out of Lives!"
+ },
+ {
+  "t": 9.6,
+  "do": "mark",
+  "name": "out_of_lives"
+ },
+ {
+  "t": 9.8,
+  "do": "tap_group",
+  "group": "btn_retry"
+ },
+ {
+  "t": 11.5,
+  "do": "expect_group_count",
+  "group": "tappable",
+  "min": 3
+ }
+]

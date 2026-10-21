@@ -1,0 +1,71 @@
+[
+ {
+  "t": 1.0,
+  "do": "tap_group",
+  "group": "btn_settings"
+ },
+ {
+  "t": 1.8,
+  "do": "mark",
+  "name": "01_settings_on"
+ },
+ {
+  "t": 2.0,
+  "do": "tap_group",
+  "group": "btn_sound"
+ },
+ {
+  "t": 2.4,
+  "do": "expect_bus_muted",
+  "bus": "SFX",
+  "value": true
+ },
+ {
+  "t": 2.5,
+  "do": "mark",
+  "name": "02_sfx_muted"
+ },
+ {
+  "t": 2.7,
+  "do": "tap_group",
+  "group": "btn_music"
+ },
+ {
+  "t": 3.1,
+  "do": "expect_bus_muted",
+  "bus": "Music",
+  "value": true
+ },
+ {
+  "t": 3.2,
+  "do": "mark",
+  "name": "03_both_muted"
+ },
+ {
+  "t": 3.4,
+  "do": "tap_group",
+  "group": "btn_sound"
+ },
+ {
+  "t": 3.8,
+  "do": "expect_bus_muted",
+  "bus": "SFX",
+  "value": false
+ },
+ {
+  "t": 4.0,
+  "do": "tap_group",
+  "group": "btn_music"
+ },
+ {
+  "t": 4.4,
+  "do": "expect_bus_muted",
+  "bus": "Music",
+  "value": false
+ },
+ {
+  "t": 4.5,
+  "do": "mark",
+  "name": "04_restored"
+ }
+]

@@ -1,0 +1,29 @@
+{
+  "game_over": {
+    "date": "2026-10-21",
+    "file": "Audio/Pizzicato jingles/jingles_PIZZI05.ogg",
+    "gain": 1.0,
+    "license": "CC0",
+    "pack": "music-jingles",
+    "seconds": 0.536,
+    "source": "kenney"
+  },
+  "score": {
+    "date": "2026-10-21",
+    "file": "Audio/confirmation_001.ogg",
+    "gain": 1.0,
+    "license": "CC0",
+    "pack": "interface-sounds",
+    "seconds": 0.29,
+    "source": "kenney"
+  },
+  "ui_click": {
+    "date": "2026-10-21",
+    "file": "Audio/click_001.ogg",
+    "gain": 1.0,
+    "license": "CC0",
+    "pack": "interface-sounds",
+    "seconds": 0.097,
+    "source": "kenney"
+  }
+}

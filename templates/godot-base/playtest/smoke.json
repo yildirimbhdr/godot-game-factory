@@ -1,0 +1,178 @@
+[
+ {
+  "t": 1.0,
+  "do": "expect_text",
+  "text": "Play"
+ },
+ {
+  "t": 1.2,
+  "do": "mark",
+  "name": "01_menu"
+ },
+ {
+  "t": 1.5,
+  "do": "tap_text",
+  "text": "Settings"
+ },
+ {
+  "t": 2.2,
+  "do": "expect_text",
+  "text": "Vibration"
+ },
+ {
+  "t": 2.3,
+  "do": "mark",
+  "name": "02_settings"
+ },
+ {
+  "t": 2.35,
+  "do": "slide",
+  "name": "MusicSlider",
+  "value": 0.0
+ },
+ {
+  "t": 2.4,
+  "do": "expect_bus_muted",
+  "bus": "Music",
+  "value": true
+ },
+ {
+  "t": 2.45,
+  "do": "slide",
+  "name": "SfxSlider",
+  "value": 0.0
+ },
+ {
+  "t": 2.5,
+  "do": "expect_bus_muted",
+  "bus": "SFX",
+  "value": true
+ },
+ {
+  "t": 2.55,
+  "do": "slide",
+  "name": "MusicSlider",
+  "value": 0.8
+ },
+ {
+  "t": 2.6,
+  "do": "slide",
+  "name": "SfxSlider",
+  "value": 1.0
+ },
+ {
+  "t": 2.65,
+  "do": "expect_bus_muted",
+  "bus": "SFX",
+  "value": false
+ },
+ {
+  "t": 3.0,
+  "do": "tap_text",
+  "text": "Back"
+ },
+ {
+  "t": 3.5,
+  "do": "tap_text",
+  "text": "Play"
+ },
+ {
+  "t": 4.7,
+  "do": "mark",
+  "name": "03_game"
+ },
+ {
+  "t": 4.9,
+  "do": "tap",
+  "x": 540,
+  "y": 960
+ },
+ {
+  "t": 5.3,
+  "do": "tap_text",
+  "text": "II"
+ },
+ {
+  "t": 5.9,
+  "do": "expect_paused",
+  "value": true
+ },
+ {
+  "t": 6.0,
+  "do": "mark",
+  "name": "04_pause"
+ },
+ {
+  "t": 6.2,
+  "do": "tap_text",
+  "text": "Resume"
+ },
+ {
+  "t": 6.7,
+  "do": "expect_paused",
+  "value": false
+ },
+ {
+  "t": 6.75,
+  "do": "app_background"
+ },
+ {
+  "t": 7.1,
+  "do": "expect_paused",
+  "value": true
+ },
+ {
+  "t": 7.2,
+  "do": "tap_text",
+  "text": "Resume"
+ },
+ {
+  "t": 7.6,
+  "do": "expect_paused",
+  "value": false
+ },
+ {
+  "t": 7.8,
+  "do": "tap",
+  "x": 540,
+  "y": 960
+ },
+ {
+  "t": 8.1,
+  "do": "tap",
+  "x": 540,
+  "y": 960
+ },
+ {
+  "t": 8.4,
+  "do": "tap",
+  "x": 540,
+  "y": 960
+ },
+ {
+  "t": 8.7,
+  "do": "tap",
+  "x": 540,
+  "y": 960
+ },
+ {
+  "t": 9.4,
+  "do": "expect_text",
+  "text": "Game Over"
+ },
+ {
+  "t": 9.5,
+  "do": "mark",
+  "name": "05_game_over"
+ },
+ {
+  "t": 9.7,
+  "do": "tap_text",
+  "text": "Main Menu"
+ },
+ {
+  "t": 10.7,
+  "do": "expect_text",
+  "text": "Play"
+ }
+]
