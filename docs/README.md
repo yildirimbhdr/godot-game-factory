@@ -20,6 +20,7 @@ What we decided, why, and what was measured. Read these before changing a tool o
 | Ads and analytics | [0015](decisions/0015-ads-and-analytics.md) | AdMob (Poing) + Firebase Analytics (godot-x) behind the `Ads`/`Analytics` autoloads; test ids in debug; consent first; shared Firebase project because of the quota; AdMob app and units created through the web console |
 
 | Store release | [0016](decisions/0016-store-release.md) | Publishing is a plugin skill: generated store graphics and texts, privacy page, builds; owner keeps keys and final submit; Play's 12-tester/14-day rule shapes the schedule |
+| Release tracking | [0017](decisions/0017-release-tracking.md) | Per-game releases.json + CHANGELOG, semantic version and shared build number, per-store state, shown on the dashboard |
 
 Lessons (mistakes and the rule that prevents them) are in [`../lessons`](../lessons/README.md). Per-game asset sources and licenses live in each game's `ASSETS.md`.
 

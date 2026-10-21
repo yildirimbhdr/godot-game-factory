@@ -13,7 +13,7 @@ from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE))
-import gf_profile, dod_check, store_listing_check  # noqa: E402
+import gf_profile, dod_check, store_listing_check, release  # noqa: E402
 
 
 def cfg_value(text: str, key: str, default=""):
@@ -91,6 +91,12 @@ def inspect(game: Path) -> dict:
         s["builds"] = sorted(p.name for p in (store / "builds").glob("*") if p.suffix in {".aab", ".apk", ".ipa"}) if (store / "builds").is_dir() else []
         s["status"] = json.loads((store / "status.json").read_text()) if (store / "status.json").is_file() else {}
     g["store"] = s
+    g["release"] = release.load(game) if (game / "export_presets.cfg").is_file() else None
+    g["changelog_open"] = []
+    cl = game / "CHANGELOG.md"
+    if cl.is_file():
+        m = re.search(r"## Unreleased\n(.*?)(?=^## |\Z)", cl.read_text(), re.M | re.S)
+        g["changelog_open"] = [l[2:].strip() for l in (m.group(1) if m else "").splitlines() if l.startswith("- ")]
     g["git"] = {"commit": git(game, "log", "-1", "--format=%h %s"), "dirty": bool(git(game, "status", "--short"))} if (game / ".git").is_dir() else None
     ledger = Path.home() / ".game-factory" / "genart_ledger.json"
     return g
@@ -106,6 +112,30 @@ def pill(ok, yes="ok", no="open") -> str:
 
 def kv(label, value) -> str:
     return f'<div class="kv"><span>{esc(label)}</span><b>{esc(value) if value else "-"}</b></div>'
+
+
+STATE_LABEL = {"uploaded": "uploaded, not submitted", "internal_test": "internal test", "in_review": "in review", "live": "live", "rejected": "rejected", "removed": "removed"}
+
+
+def release_block(g: dict) -> str:
+    r = g["release"]
+    n_open = len(g["changelog_open"])
+    rows = [f'<tr><td>In development</td><td><b>{esc(r["version"])}</b> (build {esc(r["build"])})</td><td>{pill(not n_open, "no unreleased notes", f"{n_open} unreleased note(s)")}</td></tr>']
+    for key, label in (("play", "Google Play"), ("apple", "App Store")):
+        cur = r["stores"].get(key)
+        if not cur:
+            rows.append(f"<tr><td>{label}</td><td>-</td><td>{pill(False, '', 'nothing recorded')}</td></tr>")
+            continue
+        up = cur["version"] == r["version"] and cur["state"] == "live"
+        note = STATE_LABEL.get(cur["state"], cur["state"]) + (f' ({esc(cur["track"])})' if cur.get("track") else "")
+        if cur["version"] != r["version"]:
+            note += f' - behind, dev is {esc(r["version"])}'
+        rows.append(f'<tr><td>{label}</td><td>{esc(cur["version"])} (build {esc(cur["build"])})</td><td>{pill(up, "up to date", note)}</td></tr>')
+    hist = "".join(f'<li><b>{esc(h["version"])}</b> {esc(h["date"])}: {esc("; ".join(h["notes"]) or "-")}</li>' for h in reversed(r["history"]))
+    pending = "".join(f"<li>{esc(n)}</li>" for n in g["changelog_open"])
+    return (f'<h4>Releases</h4><table class="rel">{"".join(rows)}</table>'
+            + (f'<details><summary>Unreleased changes</summary><ul>{pending}</ul></details>' if pending else "")
+            + (f'<details><summary>Version history</summary><ul>{hist}</ul></details>' if hist else ""))
 
 
 def card(g: dict) -> str:
@@ -125,11 +155,16 @@ def card(g: dict) -> str:
         ("Release build", bool(s.get("builds")), "none"),
     ]
     st = s.get("status", {})
-    for key, label in (("privacy_url", "Privacy policy URL live"), ("play_submitted", "Submitted to Google Play"), ("apple_submitted", "Submitted to App Store")):
-        checks.append((label, bool(st.get(key)), "no"))
+    checks.append(("Privacy policy URL live", bool(st.get("privacy_url")), "no"))
+    rel = g.get("release")
+    for key, label in (("play", "Live on Google Play"), ("apple", "Live on App Store")):
+        cur = (rel or {}).get("stores", {}).get(key)
+        checks.append((label, bool(cur and cur["state"] == "live" and cur["version"] == rel["version"]), cur["state"] if cur else "not submitted"))
     done = sum(1 for _, ok, _ in checks if ok)
     lis = "".join(f'<li>{pill(ok, "done", why)} {esc(name)}</li>' for name, ok, why in checks)
     extra = ""
+    if rel:
+        extra += release_block(g)
     if s.get("builds"):
         extra += f'<p class="small">Builds: {esc(", ".join(s["builds"]))}</p>'
     if st.get("privacy_url"):
@@ -154,7 +189,7 @@ main{max-width:1000px;margin:0 auto;padding:24px 16px 48px}h1{color:var(--acc);m
 .bar{height:8px;background:var(--line);border-radius:6px;margin:8px 0 14px}.bar i{display:block;height:100%;background:var(--ok);border-radius:6px}
 .cols{display:grid;grid-template-columns:1fr 1fr;gap:20px}@media(max-width:720px){.cols{grid-template-columns:1fr}}
 .checks{list-style:none;margin:0;padding:0}.checks li{padding:3px 0}.pill{display:inline-block;font-size:12px;padding:1px 8px;border-radius:99px;margin-right:6px;color:#fff}
-.pill.ok{background:var(--ok)}.pill.open{background:var(--open)}.small{color:var(--mut);font-size:13px;margin:.5em 0 0}details{margin-top:8px;font-size:14px}
+.pill.ok{background:var(--ok)}.pill.open{background:var(--open)}.rel{width:100%;border-collapse:collapse;margin:6px 0}.rel td{padding:4px 6px;border-bottom:1px dashed var(--line)}h4{margin:14px 0 4px;color:var(--acc)}.small{color:var(--mut);font-size:13px;margin:.5em 0 0}details{margin-top:8px;font-size:14px}
 """
 
 

@@ -54,3 +54,15 @@ Never click a final submit/publish/confirm, enter payment or tax data, or publis
 - [ ] Play closed test running with >= 12 testers for 14 days, then production application
 - [ ] Release AAB and iOS build installed and played on a device; version numbers bumped
 - [ ] User pressed the final submit/publish in each console
+
+## Updating a game that is already published
+Track every change so the dashboard always shows what is in development and what each store has (`scripts/release.py`).
+
+1. While working, add a line per user-visible change: `release.py note <game> "New world: Ocean"` (goes under Unreleased in CHANGELOG.md).
+2. Before building for a store, bump: `release.py bump <game> patch|minor|major`.
+   patch = fixes and tuning, minor = new levels, worlds or features, major = redesign or new core loop. Pick one and tell the user why.
+   The build number rises by one on every bump (Android version/code, iOS build) and never goes back; both stores reject a reused build number.
+3. Update `whats_new` for every locale in store/listing.json (the bump prints this reminder), rebuild with android_release.sh / ios_release.sh.
+4. After each real step in a console, record it: `release.py store <game> play|apple uploaded|internal_test|in_review|live|rejected|removed [--track production]`.
+   Record only what actually happened and, for a final publish, only after the user did it or said go.
+5. Never assume the newest version is live: read `release.py show <game>` or the dashboard first. "not live in: play, apple" means the current version has not reached users there.
