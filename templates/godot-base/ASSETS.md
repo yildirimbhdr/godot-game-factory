@@ -7,6 +7,7 @@ anything requiring attribution must be credited in-game too.
 | File(s) | Type | Source URL | Author | License | Date added | Notes |
 |---|---|---|---|---|---|---|
 | assets/ui/example.png | sprite | https://kenney.nl/assets/... | Kenney | CC0 1.0 | YYYY-MM-DD | |
+| assets/i18n/strings.json | text | (written in this project) | game-factory-godot | CC0 | 2026-10-22 | English-keyed UI strings, Turkish block included |
 | assets/audio/example.wav | sfx | (generated) | game-factory-godot | CC0 | YYYY-MM-DD | made with <tool>, seed/params in audio/README |
 
 Rules:

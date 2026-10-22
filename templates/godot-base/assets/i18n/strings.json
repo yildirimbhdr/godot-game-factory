@@ -1,0 +1,29 @@
+{
+  "tr": {
+    "Play": "Oyna",
+    "Settings": "Ayarlar",
+    "Quit": "Çıkış",
+    "Paused": "Duraklatıldı",
+    "Resume": "Devam",
+    "Restart": "Yeniden başla",
+    "Main Menu": "Ana menü",
+    "Game Over": "Oyun bitti",
+    "Level Clear!": "Bölüm tamam!",
+    "Retry": "Tekrar dene",
+    "Replay": "Tekrar oyna",
+    "Next": "Sonraki",
+    "Back": "Geri",
+    "Music": "Müzik",
+    "Sound effects": "Ses efektleri",
+    "Vibration: %s": "Titreşim: %s",
+    "On": "Açık",
+    "Off": "Kapalı",
+    "Language: %s": "Dil: %s",
+    "Auto": "Otomatik",
+    "Score": "Skor",
+    "Best %d": "En iyi %d",
+    "New best!": "Yeni rekor!",
+    "Got it": "Anladım",
+    "Tap to score!": "Puan için dokun!"
+  }
+}

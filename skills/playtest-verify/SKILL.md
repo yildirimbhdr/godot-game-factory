@@ -7,6 +7,16 @@ description: Verify a Godot game with scripted touch playtests, screenshots and 
 
 "It compiles" and "the test passed" are not "done". Look at the screenshots yourself.
 
+## Testing must be visible and evidenced (lesson 0029)
+The user watches the Godot window open and the game being played; that is what "I tested it" means here.
+- A test is `scripts/playtest.sh` (Godot window, scripted touches, screenshots) or `scripts/play.sh <game> [scenario.json]`
+  (live window the user can watch or play). `godot --headless`, GDScript/Python unit scripts and simulators are build checks
+  (import, level solvability), never a playtest, and must not be described as one.
+- Run `play.sh` with the scenario in front of the user at least once per milestone (core loop works, a new screen, final check).
+- Every "tested" report names the scenario, the log path and the marks you opened, and says in one line what each mark shows
+  (e.g. "03_game.png: board with 6 pieces, score 0, pause button top right"). No marks opened, no claim.
+- If the Godot window cannot open (no display, crash), say so and stop; do not substitute another kind of check.
+
 ## Run
 `scripts/playtest.sh <game> <scenario.json> [--seconds N] [--resolution WxH] [--notch] [--lenient-audio]`
 Outputs `<game>/.playtest/<scenario>/log.txt`, `marks/*.png`, the recorded `.wav`. Exit code 1 on any failure.
@@ -18,6 +28,7 @@ Open the `marks/*.png` files and check: nothing clipped by the notch, nothing ov
 
 ## Definition of Done (all must be true)
 - [ ] Main menu, on-screen pause button, pause menu, settings (music slider only if music exists), game over, retry, main menu
+- [ ] Level-based game: level select screen with locked/current/done and saved progress (endless game: saved high score)
 - [ ] No flat placeholder rectangles: real game art, a game-specific theme (not `FACTORY_DEFAULT`)
 - [ ] SFX for every meaningful event; music optional; volume sliders work; no clipping; playtest audio check passes
 - [ ] Feedback on every interaction (tween/particles/flash/shake/haptic); scene transitions fade

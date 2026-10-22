@@ -15,6 +15,7 @@ func _ready() -> void:
 	PauseManager.set_gameplay_active(true)
 	AudioManager.play_music("gameplay")
 	_hud.set_score(0)
+	HowTo.show_once(self, "play", "Tap to score!")
 
 
 func _unhandled_input(event: InputEvent) -> void:

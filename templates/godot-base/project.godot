@@ -4,13 +4,16 @@ config_version=5
 [application]
 
 config/name="Game Title"
-run/main_scene="res://ui/main_menu.tscn"
+run/main_scene="res://ui/splash.tscn"
+boot_splash/show_image=false
+boot_splash/bg_color=Color(0.07, 0.08, 0.1, 1)
 config/features=PackedStringArray("4.7", "GL Compatibility")
 config/icon="res://icon.svg"
 
 [autoload]
 
 Settings="*res://autoload/settings.gd"
+Localization="*res://autoload/localization.gd"
 AudioManager="*res://autoload/audio_manager.gd"
 Haptics="*res://autoload/haptics.gd"
 Ads="*res://autoload/ads.gd"

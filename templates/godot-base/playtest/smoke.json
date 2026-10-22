@@ -1,5 +1,10 @@
 [
  {
+  "t": 0.2,
+  "do": "mark",
+  "name": "00_splash"
+ },
+ {
   "t": 1.0,
   "do": "expect_text",
   "text": "Play"

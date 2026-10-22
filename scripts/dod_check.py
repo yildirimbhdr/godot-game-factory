@@ -8,6 +8,7 @@ Checks (see skills/playtest-verify for the manual half that DOD.md records):
   identity   a game-specific theme (not FACTORY_DEFAULT) and an app icon that is not the template icon.svg
   assets     every file under assets/ is covered by ASSETS.md (path, folder or file name)
   audio      every AudioManager.play_sfx("name") in code has assets/audio/sfx/name.*
+  splash     the engine boot splash (Godot logo) is off or replaced, and the main scene is the game's own splash screen
   playtest   .playtest/dod_stamp.json has strict-audio runs of a `smoke*` scenario at >= 3 screen shapes,
              all newer than the newest source file
   review     DOD.md exists, has no unchecked box and is newer than the newest source file
@@ -71,6 +72,12 @@ def check(project: Path, release: bool = False) -> list[str]:
     icon = re.search(r'config/icon="([^"]*)"', text)
     if not icon or icon.group(1).endswith("icon.svg"):
         fails.append("identity: application icon is still the template icon.svg")
+
+    if re.search(r"^boot_splash/show_image=false", text, re.M) is None and not re.search(r'^boot_splash/image="', text, re.M):
+        fails.append("splash: the Godot boot logo still shows (set boot_splash/show_image=false, or boot_splash/image to the game logo)")
+    main = re.search(r'run/main_scene="res://([^"]*)"', text)
+    if not main or "splash" not in main.group(1).lower() or not (project / main.group(1)).is_file():
+        fails.append("splash: run/main_scene must be the game's own splash scene (copy ui/splash.tscn from the template; it leads to the main menu)")
 
     assets = project / "assets"
     ledger = (project / "ASSETS.md").read_text() if (project / "ASSETS.md").is_file() else ""

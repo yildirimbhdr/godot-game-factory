@@ -12,6 +12,11 @@ Starting point for every game. It is copied into a new game project, not used as
    Kenney CC0 packs, files and licenses recorded in `ASSETS.md`).
 3. **Placeholder game (`game/`)** – replace its content, keep the `Hud` instance and the `PauseManager.set_gameplay_active(true)` call.
 
+## Also built in
+- `ui/splash.tscn` is the main scene (logo from `assets/art/logo.png`, else the app icon; tap skips); the Godot boot logo is off.
+- `Localization` autoload + `assets/i18n/strings.json`: English texts are the keys, language button in settings; formats use `tr("Best %d") % n`.
+- `HowTo.show_once(self, "play", "text")`: first-run card, tested by `playtest/howto.json`.
+
 ## Rules the template enforces
 - Portrait 1080x1920, `canvas_items` + `expand`; build UI with containers/anchors, never fixed coordinates.
 - Put HUD elements inside `SafeArea` (48 px minimum margin on every side). Touch targets are at least 150 px (`UIButton`).

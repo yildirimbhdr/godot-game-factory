@@ -8,6 +8,7 @@ Automated half: `python3 ${CLAUDE_PLUGIN_ROOT}/scripts/dod_check.py .`
 Last reviewed: YYYY-MM-DD, build/commit: ...
 
 - [ ] Main menu, on-screen pause button, pause menu, settings, result screens, retry, back to menu
+- [ ] Level-based: level select screen (locked/current/done, saved progress, win -> Next/Replay/Levels). Endless: saved high score shown on menu and result
 - [ ] Icons instead of words on pause, settings and result screens; every icon does what it shows (mute toggles, etc.)
 - [ ] Game-specific theme, font, backdrop; no flat placeholder rectangles
 - [ ] Every meaningful event has a sound; volume/mute toggles work; sound confirmed on a real device (silent switch off and on)

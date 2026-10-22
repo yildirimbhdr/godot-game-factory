@@ -27,9 +27,9 @@ func show_result(score: int, title := "Game Over", next := Callable()) -> void:
 	if is_new_best:
 		best = score
 		Settings.set_value("best_score", best)
-	%ScoreLabel.text = "%s %d" % [score_label, score]
+	%ScoreLabel.text = "%s %d" % [tr(score_label), score]
 	%RetryButton.text = "Retry" if not next.is_valid() else "Replay"
-	%BestLabel.text = "New best!" if is_new_best else "Best %d" % best
+	%BestLabel.text = tr("New best!") if is_new_best else tr("Best %d") % best
 	AudioManager.play_sfx("game_over")
 	Haptics.heavy()
 	await get_tree().process_frame

@@ -8,6 +8,8 @@ const DEFAULTS := {
 	"music_volume": 0.8,
 	"sfx_volume": 1.0,
 	"vibration": true,
+	"language": "auto",
+	"force_howto": false,
 	"best_score": 0,
 }
 
@@ -24,8 +26,11 @@ func _ready() -> void:
 		_cfg.load(PATH)
 
 
-func get_value(key: String) -> Variant:
-	return _cfg.get_value("settings", key, DEFAULTS.get(key))
+## Keys missing from DEFAULTS (e.g. howto_<key> flags) read as `fallback` instead of raising an engine error.
+func get_value(key: String, fallback: Variant = false) -> Variant:
+	if _cfg.has_section_key("settings", key):
+		return _cfg.get_value("settings", key)
+	return DEFAULTS.get(key, fallback)
 
 
 ## Pass save_now = false for rapid updates (sliders) and call flush() when done.

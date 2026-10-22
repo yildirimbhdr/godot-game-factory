@@ -1,41 +1,52 @@
 # game-factory-godot
 
-A Claude Code plugin that turns "make me a game" into a repeatable, **verified** workflow for polished 2D mobile games
-(Android and iOS) built with **Godot 4**.
+Tell Claude Code "make me a game" and get a **finished-looking 2D mobile game** (Android and iOS) built with Godot 4:
+your own splash, menu, settings, sounds, effects and (for level games) a level map, tested by actually playing it on screen.
 
-Version 0.3. Proven end to end on macOS with a pilot game (a physics screw puzzle, 32 levels, hints, sound, AdMob test ads and Firebase Analytics) installed on a real iPhone.
+Version 0.4. Proven end to end on macOS with a pilot game (a physics screw puzzle, 32 levels, hints, sound, AdMob test ads and Firebase Analytics) installed on a real iPhone.
 
-## Why
+## Install
 
-A coding agent left alone ships games with placeholder art, no sound, no animation, no pause button, a first level that
-works and nothing else, and "it runs" as the only test. This plugin makes those requirements part of the process and
-checks them with scripts instead of trust:
+```
+/plugin marketplace add yildirimbhdr/godot-game-factory
+/plugin install game-factory-godot@game-factory
+```
+Restart Claude Code, then say **"run the doctor"**: it checks Godot, ffmpeg, node and python and asks before fixing anything.
+Update later with `/plugin` > Marketplaces > update, then restart.
+
+## Try it
+
+Just talk to Claude:
+
+| You say | What happens |
+|---|---|
+| "Bana oyun fikri bul" / "give me game ideas" | `game-ideation`: 6 ideas from different genres (not one genre), each with hook, core loop, level-or-endless, and what makes it original |
+| "Make this one" | `godot-scaffold`: short brief (ads/analytics/IAP asked one by one), project created from the template, art direction and theme |
+| (while it builds) | You watch Godot open and the game being played; screenshots are checked, not just "it compiles" |
+| "Is it ready?" | Definition of Done gate: it cannot say "done" until splash, sounds, pause, 3 screen shapes, assets list and review pass |
+| "Publish it" | `store-release`: icons, screenshots, listing text, privacy page, signed builds; you keep keys, payments and the final submit |
+
+## What every game gets (already in the template)
+
+- **Splash screen** with your logo and name (no Godot logo), then main menu, pause, settings, game over, retry
+- **Turkish and English** built in (device language, switchable in settings); add more languages in one JSON file
+- **First-run how-to card** shown once
+- **Sound effects and optional music** with licenses recorded, volume sliders, mute toggles
+- **Juice**: button feedback, fades, floating words, confetti, shake, haptics
+- **Safe-area aware UI** for notches, touch targets of 150 px or more, auto-pause when the app goes to the background
+- **Levels or endless**: level map with saved progress and stars, or a saved high score
+- **Optional**: AdMob (consent, rewarded, interstitial) and Firebase Analytics, switched on without changing game code
+- **Scripted playtests** that tap through the game and keep screenshots, plus `play.sh` to watch it live
+
+## Why it is different
+
+A coding agent left alone ships placeholder art, no sound, no animation, no pause button, one level and "it runs" as the only test.
+Here the rules are enforced instead of trusted:
 
 - every mistake that reached a real user is a **lesson** with an enforcing rule (`lessons/`),
 - a **Definition of Done gate** (a Stop hook) refuses to let Claude call a game finished until the automated checks pass,
+- a **session hook** reminds Claude of the fixed order (doctor, brief, template, Godot scenes, visible test) at every start,
 - a deterministic **scripted playtest** drives the game with touches and keeps screenshots of the marked moments.
-
-## What is inside
-
-| Part | What it does |
-|---|---|
-| `templates/godot-base` | Portrait 1080x1920 starter: menu, pause, settings, game over, safe area, fade transitions, audio manager (limiter, pitch), haptics, mock ads API, `DOD.md`. Neutral look: every game builds its own theme |
-| `templates/modules/common` | Reusable pieces proven in the pilot: `GameFx` (floating words, camera shake, confetti, flash, breaking heart), `LivesView`, `IconButton` (toggle glyphs), `Backdrop`, level map with saved progress and stars, icon-only pause/settings/result screens |
-| `templates/modules/puzzle-unscrew` | Reference physics puzzle: ASCII silhouettes become jigsaw pieces, depth planes, hidden screws, rigid-body physics, jars and a buffer tray, plus the level tools (rule checker, naive/greedy/solver difficulty analysis, colour-deal search) |
-| `templates/modules/ads-admob` | Real `Ads` (AdMob via Poing Studios: UMP consent, rewarded, interstitial with cadence, test ads in debug builds) and `Analytics` (Firebase, collection only after consent) autoloads that replace the base mocks without changing game code; privacy-options button lives in the settings panel |
-| `scripts/release.py` | Version bumps (major/minor/patch plus a shared build number), CHANGELOG.md and per-store state (live, in review, in testing); shown on the dashboard |
-| `scripts/gf_profile.py`, `dashboard.py` | Your publisher profile (asked once, reused by every game, stays on your machine) and an offline dashboard page with the profile and every game's ids, store assets, listing, privacy page, builds and release progress |
-| `scripts/android_release.sh`, `ios_release.sh`, `site_deploy.sh`, `setup-android-gradle.sh` | Signed release AAB (password from the macOS Keychain), App Store archive + upload through your Xcode-signed-in Apple account, one Firebase Hosting site for all your privacy/support pages, Gradle template setup |
-| `scripts/store_assets.py`, `store_listing_check.py`, `privacy_policy.py` | Store graphics (icons, Play feature graphic, captioned screenshots per locale and store size), listing text limit checker, bilingual privacy policy page generated from the SDKs the game ships |
-| `scripts/playtest.sh` | Movie-Maker playtest: taps, group taps, method calls, expectations, screenshots, audio checks (silence, clipping, missing SFX); records a DoD stamp per screen shape |
-| `scripts/dod_check.py`, `hooks/hooks.json`, `scripts/dod_hook.sh` | The Definition of Done gate (see below) |
-| `scripts/build_theme.py`, `data/themes/` | 9-slice UI theme from Kenney CC0 packs with recipes (tint, own font, outlined text) |
-| `scripts/sfx.sh`, `scripts/music.sh` | SFX from CC0 packs (or retro synth, opt-in), music with loudness normalising, licenses recorded in `ASSETS.md` |
-| `scripts/genart.py` | Image generation with the Gemini API for flat/clean 2D art: background keying, trimming, style anchor, 1:1 app icons, **hard credit limit** |
-| `scripts/setup-android-gradle.sh` | Prepares a project for Gradle-based Android exports (build template, `.gdignore`, Firebase `google-services` patch); needed by AdMob/Firebase |
-| `scripts/setup-godot-mcp.sh` + `.mcp.json` | Installs a pinned Godot MCP server on first use |
-| `skills/` | `doctor`, `art-direction`, `godot-scaffold`, `asset-pipeline`, `playtest-verify`, `physics-puzzle-design`, `monetization`, `store-release`, `dashboard`, `lessons-learned` |
-| `lessons/`, `docs/decisions/` | What went wrong and why each tool was chosen, with measured results |
 
 ## Requirements
 
@@ -48,25 +59,37 @@ checks them with scripts instead of trust:
 
 Run the `doctor` skill after installing; it checks everything and asks before changing anything.
 
-## Install
+## Useful commands
 
 ```
-/plugin marketplace add yildirimbhdr/godot-game-factory
-/plugin install game-factory-godot@game-factory
+python3 scripts/new_game.py <slug> "<Title>" --dest <folder>   create a game from the template
+scripts/play.sh <game> [playtest/smoke.json]                    open the game in a visible window (play it or watch a scripted run)
+scripts/playtest.sh <game> playtest/smoke.json                  recorded playtest with screenshots (also run at 450x975 --notch and 600x800)
+python3 scripts/dod_check.py <game>                             what is still missing before "done"
 ```
-For local development: `claude --plugin-dir ./godot-game-factory` and `/reload-plugins`.
 
-## Using it
+## Reference: what is inside
 
-1. Say what game you want. `art-direction` writes a brief (style, palette, size grid, asset list, what differs from any
-   reference game), makes **one anchor asset**, waits for your approval, then generates the set.
-2. `godot-scaffold` copies the template, `asset-pipeline` adds theme, font, sounds and music with licenses recorded.
-3. Build the game; copy modules from `templates/modules` as needed. Scaffolding **always asks** (separately) about AdMob ads,
-   Firebase Analytics and IAP; all are optional, default no. On yes, `monetization` sets everything up: the Firebase MCP creates the
-   apps and config files (sign in with its `firebase_login`), Claude in Chrome creates the AdMob app and ad units in your signed-in
-   console, and the first test runs on a device with Google's test ads.
-4. `playtest-verify` runs the playtests and fills `DOD.md` after Claude has looked at the screenshots.
-5. `store-release` prepares everything for the stores (graphics, texts, privacy policy, builds, checklist); you keep the keys, payments and the final submit.
+| Part | What it does |
+|---|---|
+| `templates/godot-base` | Portrait 1080x1920 starter: menu, pause, settings, game over, safe area, fade transitions, audio manager (limiter, pitch), haptics, mock ads API, `DOD.md`. Splash, localization (EN/TR), first-run how-to card. Neutral look: every game builds its own theme |
+| `templates/modules/common` | Reusable pieces proven in the pilot: `GameFx` (floating words, camera shake, confetti, flash, breaking heart), `LivesView`, `IconButton` (toggle glyphs), `Backdrop`, level map with saved progress and stars, icon-only pause/settings/result screens |
+| `templates/modules/puzzle-unscrew` | Reference physics puzzle: ASCII silhouettes become jigsaw pieces, depth planes, hidden screws, rigid-body physics, jars and a buffer tray, plus the level tools (rule checker, naive/greedy/solver difficulty analysis, colour-deal search) |
+| `templates/modules/ads-admob` | Real `Ads` (AdMob via Poing Studios: UMP consent, rewarded, interstitial with cadence, test ads in debug builds) and `Analytics` (Firebase, collection only after consent) autoloads that replace the base mocks without changing game code; privacy-options button lives in the settings panel |
+| `scripts/release.py` | Version bumps (major/minor/patch plus a shared build number), CHANGELOG.md and per-store state (live, in review, in testing); shown on the dashboard |
+| `scripts/gf_profile.py`, `dashboard.py` | Your publisher profile (asked once, reused by every game, stays on your machine) and an offline dashboard page with the profile and every game's ids, store assets, listing, privacy page, builds and release progress |
+| `scripts/android_release.sh`, `ios_release.sh`, `site_deploy.sh`, `setup-android-gradle.sh` | Signed release AAB (password from the macOS Keychain), App Store archive + upload through your Xcode-signed-in Apple account, one Firebase Hosting site for all your privacy/support pages, Gradle template setup |
+| `scripts/store_assets.py`, `store_listing_check.py`, `privacy_policy.py` | Store graphics (icons, Play feature graphic, captioned screenshots per locale and store size), listing text limit checker, bilingual privacy policy page generated from the SDKs the game ships |
+| `scripts/new_game.py`, `scripts/play.sh` | One-step project creation from the template; open the game (optionally a scripted run) in a visible window |
+| `scripts/playtest.sh` | Movie-Maker playtest: taps, group taps, method calls, expectations, screenshots, audio checks (silence, clipping, missing SFX); records a DoD stamp per screen shape |
+| `scripts/dod_check.py`, `hooks/hooks.json`, `scripts/dod_hook.sh` | The Definition of Done gate (see below) |
+| `scripts/build_theme.py`, `data/themes/` | 9-slice UI theme from Kenney CC0 packs with recipes (tint, own font, outlined text) |
+| `scripts/sfx.sh`, `scripts/music.sh` | SFX from CC0 packs (or retro synth, opt-in), music with loudness normalising, licenses recorded in `ASSETS.md` |
+| `scripts/genart.py` | Image generation with the Gemini API for flat/clean 2D art: background keying, trimming, style anchor, 1:1 app icons, **hard credit limit** |
+| `scripts/setup-android-gradle.sh` | Prepares a project for Gradle-based Android exports (build template, `.gdignore`, Firebase `google-services` patch); needed by AdMob/Firebase |
+| `scripts/setup-godot-mcp.sh` + `.mcp.json` | Installs a pinned Godot MCP server on first use |
+| `skills/` | `doctor`, `game-ideation`, `art-direction`, `godot-scaffold`, `asset-pipeline`, `playtest-verify`, `physics-puzzle-design`, `monetization`, `store-release`, `dashboard`, `lessons-learned` |
+| `lessons/`, `docs/decisions/` | What went wrong and why each tool was chosen, with measured results |
 
 ### Credit limit
 `genart.py` refuses to run until you set a limit (`genart.py --set-limit 3`) and stops when the next image would exceed it.
