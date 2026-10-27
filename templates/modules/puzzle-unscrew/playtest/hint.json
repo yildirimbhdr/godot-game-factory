@@ -1,0 +1,54 @@
+[
+ {
+  "t": 1.5,
+  "do": "tap_group",
+  "group": "btn_play"
+ },
+ {
+  "t": 3.2,
+  "do": "tap_group",
+  "group": "level_node",
+  "index": 0
+ },
+ {
+  "t": 5.0,
+  "do": "mark",
+  "name": "start"
+ },
+ {
+  "t": 5.5,
+  "do": "call",
+  "group": "game",
+  "method": "autoplay_step"
+ },
+ {
+  "t": 5.55,
+  "do": "tap_group",
+  "group": "btn_hint"
+ },
+ {
+  "t": 7.0,
+  "do": "mark",
+  "name": "pending_hint"
+ },
+ {
+  "t": 7.2,
+  "do": "tap_group",
+  "group": "btn_hint"
+ },
+ {
+  "t": 7.3,
+  "do": "tap_group",
+  "group": "btn_hint"
+ },
+ {
+  "t": 7.4,
+  "do": "tap_group",
+  "group": "btn_hint"
+ },
+ {
+  "t": 9.0,
+  "do": "mark",
+  "name": "no_hints_left"
+ }
+]

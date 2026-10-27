@@ -1,0 +1,84 @@
+{
+  "name": "fantasy-brown",
+  "upscale": 2,
+  "font": {
+    "pack": "kenney-fonts",
+    "file": "Fonts/Kenney High.ttf"
+  },
+  "font_size": 52,
+  "button": {
+    "normal": {
+      "pack": "ui-pack-adventure",
+      "file": "PNG/Double/button_brown.png",
+      "margins": [
+        16,
+        16,
+        16,
+        20
+      ],
+      "content": [
+        24,
+        10,
+        24,
+        14
+      ]
+    },
+    "pressed": {
+      "pack": "ui-pack-adventure",
+      "file": "PNG/Double/button_brown.png",
+      "margins": [
+        16,
+        16,
+        16,
+        20
+      ],
+      "content": [
+        24,
+        14,
+        24,
+        10
+      ],
+      "tint": "Color(0.78, 0.78, 0.78, 1)"
+    },
+    "disabled": {
+      "pack": "ui-pack-adventure",
+      "file": "PNG/Double/button_grey.png",
+      "margins": [
+        16,
+        16,
+        16,
+        20
+      ],
+      "content": [
+        24,
+        10,
+        24,
+        14
+      ]
+    }
+  },
+  "panel": {
+    "pack": "ui-pack-adventure",
+    "file": "PNG/Double/panel_brown_dark.png",
+    "margins": [
+      24,
+      24,
+      24,
+      24
+    ],
+    "content": [
+      28,
+      28,
+      28,
+      28
+    ]
+  },
+  "palette": {
+    "background": "#2a1c12",
+    "text": "#fff4dc",
+    "slider_track": "#1a110a",
+    "slider_fill": "#d89b4b",
+    "slider_knob": "#fff4dc",
+    "button_text": "#3b2410"
+  }
+}

@@ -1,0 +1,182 @@
+[
+ {
+  "t": 0.2,
+  "do": "mark",
+  "name": "00_splash"
+ },
+ {
+  "t": 1.0,
+  "do": "expect_text",
+  "text": "Play"
+ },
+ {
+  "t": 1.2,
+  "do": "mark",
+  "name": "01_menu"
+ },
+ {
+  "t": 1.5,
+  "do": "tap_text",
+  "text": "Settings"
+ },
+ {
+  "t": 2.2,
+  "do": "expect_text",
+  "text": "Vibration"
+ },
+ {
+  "t": 2.3,
+  "do": "mark",
+  "name": "02_settings"
+ },
+ {
+  "t": 2.35,
+  "do": "slide",
+  "name": "SfxSlider",
+  "value": 0.0
+ },
+ {
+  "t": 2.4,
+  "do": "expect_bus_muted",
+  "bus": "SFX",
+  "value": true
+ },
+ {
+  "t": 2.45,
+  "do": "slide",
+  "name": "SfxSlider",
+  "value": 1.0
+ },
+ {
+  "t": 2.5,
+  "do": "expect_bus_muted",
+  "bus": "SFX",
+  "value": false
+ },
+ {
+  "t": 2.9,
+  "do": "tap_text",
+  "text": "Back"
+ },
+ {
+  "t": 3.4,
+  "do": "tap_text",
+  "text": "Play"
+ },
+ {
+  "t": 4.4,
+  "do": "expect_text",
+  "text": "Levels"
+ },
+ {
+  "t": 4.5,
+  "do": "mark",
+  "name": "03_level_select"
+ },
+ {
+  "t": 4.7,
+  "do": "expect_group_count",
+  "group": "level_cell",
+  "min": 60,
+  "max": 60
+ },
+ {
+  "t": 4.9,
+  "do": "tap_group",
+  "group": "level_cell",
+  "index": 0
+ },
+ {
+  "t": 6.0,
+  "do": "mark",
+  "name": "04_level_1"
+ },
+ {
+  "t": 6.2,
+  "do": "tap_text",
+  "text": "II"
+ },
+ {
+  "t": 6.8,
+  "do": "expect_paused",
+  "value": true
+ },
+ {
+  "t": 6.9,
+  "do": "mark",
+  "name": "05_pause"
+ },
+ {
+  "t": 7.1,
+  "do": "tap_text",
+  "text": "Resume"
+ },
+ {
+  "t": 7.6,
+  "do": "expect_paused",
+  "value": false
+ },
+ {
+  "t": 7.65,
+  "do": "app_background"
+ },
+ {
+  "t": 8.0,
+  "do": "expect_paused",
+  "value": true
+ },
+ {
+  "t": 8.1,
+  "do": "tap_text",
+  "text": "Resume"
+ },
+ {
+  "t": 8.5,
+  "do": "expect_paused",
+  "value": false
+ },
+ {
+  "t": 8.7,
+  "do": "call",
+  "group": "game",
+  "method": "tap_hint",
+  "args": []
+ },
+ {
+  "t": 8.9,
+  "do": "mark",
+  "name": "06_hint"
+ },
+ {
+  "t": 9.1,
+  "do": "call",
+  "group": "game",
+  "method": "autosolve",
+  "args": []
+ },
+ {
+  "t": 10.0,
+  "do": "expect_text",
+  "text": "Level Clear!"
+ },
+ {
+  "t": 10.2,
+  "do": "mark",
+  "name": "07_level_clear"
+ },
+ {
+  "t": 10.4,
+  "do": "tap_text",
+  "text": "Levels"
+ },
+ {
+  "t": 11.5,
+  "do": "expect_text",
+  "text": "Levels"
+ },
+ {
+  "t": 11.6,
+  "do": "mark",
+  "name": "08_level_select_progress"
+ }
+]

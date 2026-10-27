@@ -1,0 +1,32 @@
+{
+ "name": "prism-glass",
+ "font": {
+  "local": "fonts/Righteous.ttf",
+  "author": "Astigmatic (The Righteous Project Authors)",
+  "license": "SIL OFL 1.1",
+  "url": "https://fonts.google.com/specimen/Righteous"
+ },
+ "font_size": 50,
+ "glass": {
+  "fill": "#6C7CFF",
+  "border": "#B8C4FF",
+  "radius": 36,
+  "glow": 0.3,
+  "disabled_fill": "#2B3260"
+ },
+ "panel": {
+  "flat": {
+   "bg": "#10143ADD",
+   "border": "#8FA0FF",
+   "border_width": 3,
+   "radius": 44
+  }
+ },
+ "palette": {
+  "background": "#0E1226",
+  "text": "#FFFFFF",
+  "slider_track": "#0A0D1E",
+  "slider_fill": "#5DE0E6",
+  "slider_knob": "#FFFFFF"
+ }
+}

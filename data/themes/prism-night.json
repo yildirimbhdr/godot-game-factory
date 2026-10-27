@@ -1,0 +1,13 @@
+{
+  "name": "prism-night",
+  "font": {"local": "fonts/Nunito-SemiBold.ttf", "author": "The Nunito Project Authors", "license": "SIL OFL 1.1 (static SemiBold instance of the variable font)", "url": "https://fonts.google.com/specimen/Nunito"},
+  "font_size": 52,
+  "button": {
+    "normal":   {"pack": "ui-pack", "file": "PNG/Grey/Double/button_rectangle_depth_gradient.png", "margins": [40, 40, 40, 52], "content": [48, 22, 48, 34], "tint": "#5B6CF0"},
+    "hover":    {"pack": "ui-pack", "file": "PNG/Grey/Double/button_rectangle_depth_gradient.png", "margins": [40, 40, 40, 52], "content": [48, 22, 48, 34], "tint": "#7081FF"},
+    "pressed":  {"pack": "ui-pack", "file": "PNG/Grey/Double/button_rectangle_flat.png", "margins": [40, 40, 40, 40], "content": [48, 34, 48, 22], "tint": "#4655C9"},
+    "disabled": {"pack": "ui-pack", "file": "PNG/Grey/Double/button_rectangle_depth_flat.png", "margins": [40, 40, 40, 52], "content": [48, 22, 48, 34], "tint": "#2B3260"}
+  },
+  "panel": {"pack": "ui-pack", "file": "PNG/Extra/Double/input_rectangle.png", "margins": [44, 44, 44, 44], "content": [56, 56, 56, 56]},
+  "palette": {"background": "#0E1226", "panel_tint": "#1F2650", "text": "#FFFFFF", "slider_track": "#0A0D1E", "slider_fill": "#5DE0E6", "slider_knob": "#FFFFFF"}
+}

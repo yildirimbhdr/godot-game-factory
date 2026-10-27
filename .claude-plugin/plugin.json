@@ -1,0 +1,8 @@
+{
+  "name": "game-factory-godot",
+  "version": "0.7.0",
+  "description": "Build polished 2D mobile games with Godot 4 and Claude Code: verified workflow, UI/audio/juice standards, and a Definition of Done gate.",
+  "author": { "name": "Bahadir Yildirim" },
+  "license": "MIT",
+  "keywords": ["godot", "gamedev", "mobile", "2d"]
+}

@@ -1,0 +1,34 @@
+[
+ {
+  "t": 1.0,
+  "do": "expect_group_count",
+  "group": "btn_play",
+  "min": 1
+ },
+ {
+  "t": 1.5,
+  "do": "tap_group",
+  "group": "btn_settings"
+ },
+ {
+  "t": 2.4,
+  "do": "expect_group_count",
+  "group": "btn_privacy",
+  "min": 1
+ },
+ {
+  "t": 3.0,
+  "do": "mark",
+  "name": "privacy_visible"
+ },
+ {
+  "t": 3.2,
+  "do": "tap_group",
+  "group": "btn_privacy"
+ },
+ {
+  "t": 4.0,
+  "do": "mark",
+  "name": "privacy_tapped"
+ }
+]

@@ -1,0 +1,13 @@
+.DS_Store
+.playtest/
+.godot/
+override.cfg
+*.apk
+*.idsig
+__pycache__/
+*.aab
+*.keystore
+*.jks
+GoogleService-Info.plist
+google-services.json
+.venv/

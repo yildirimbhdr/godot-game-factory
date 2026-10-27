@@ -1,0 +1,5 @@
+.godot/
+.playtest/
+override.cfg
+*.apk
+*.idsig

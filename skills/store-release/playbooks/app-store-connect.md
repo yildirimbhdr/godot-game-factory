@@ -1,0 +1,19 @@
+# App Store Connect playbook (verified 2026-10-21, individual account, English UI)
+
+1. **Explicit App ID first.** The New App dialog only offers bundle ids that exist in Certificates, Identifiers & Profiles. Device testing with
+   Xcode's "XC Wildcard" does not register one. Register it: developer.apple.com/account/resources/identifiers/add/bundleId -> App IDs -> App ->
+   description + Explicit bundle id (no extra capabilities for ads/analytics) -> Continue -> Register. The team id on the membership page must equal the preset's
+   `application/app_store_team_id` (and Xcode's team).
+2. **New App** (Apps -> New App): platform iOS, name (<=30), primary language, the bundle id, SKU, Full Access, Create. The Apple ID in the URL is the app id.
+3. **Build**: `scripts/ios_release.sh <game> <work-dir> --upload` (needs the app record). It reports "Uploaded App"; processing in App Store Connect takes ~10-30 min, then the build can be selected on the version page.
+4. **Version page** (Distribution -> iOS App Version): per locale promo text, description, keywords, support URL; version number; copyright. Add a language from the
+   top-right language menu ("Add <language>"); a new locale inherits the primary text, so select-all and retype. Screenshots tab: the 6.3" slot ("iPhone with Dynamic Island, medium display") needs 1206x2622 or
+   1179x2556; 6.9" is optional. Upload via `file_upload`, dismiss the info dialog with OK, wait for the thumbnails (see browser-basics).
+5. **App Information** (General): name and subtitle per locale (language menu top right of that section), category, content rights, age ratings, privacy policy URL.
+   **App Privacy** (labels), **Pricing and Availability**, **App Review** (contact name, phone, e-mail, notes): all user declarations, propose then ask.
+6. A banner "Review the updated Paid Applications Schedule" blocks submitting new apps until the Account Holder accepts it in the Business module. Never accept agreements for the user.
+7. The user picks the processed build, answers export compliance (standard HTTPS only = exempt) and presses **Add for Review / Submit**.
+8. Done in one pass for Unwind (2026-10-22, each after the user's OK): app information and category, age rating (4+), content rights, free price in all 175 countries, App Privacy labels published, review contact, build attached. The version-page screenshots must match the build being reviewed (lesson 0034).
+9. Slide Buddies (2026-10-26, second end-to-end run, lesson 0046): explicit App ID, New App (name, English (U.S.), bundle id, SKU, Full Access), `ios_release.sh --upload` and the EN version page took about 20 minutes. New UI: the version page has the tabs "Header and Search Results" and "App Previews and Screenshots"; upload all six 1206x2622 shots in one `file_upload` call, dismiss the info dialog, wait. Version number in Godot (`application/short_version`) must equal the version page ("1.0.0" vs "1.0": Apple shows 1.0). Reload `/apps` once if the new app is missing from the list.
+10. Per version page, in this order: screenshots (Remove All, upload, OK, wait), then description/keywords/URL per locale, then Build (Add Build), then App Review Information. The review contact needs first name, last name, **phone** and email; without the phone the whole page cannot be saved. Untick "Sign-in required" for games without accounts. Reload and re-open each locale after saving to confirm the text persisted (lesson 0049).
+11. Slide Buddies was submitted on 2026-10-26 in about 3 hours of console work (lesson 0051). Order and traps: privacy URL per locale, review phone required, content rights answer, age rating by script, then Add for Review opens a Draft Submission panel with a final "Submit for Review" button; the confirmation reads "1 Item Submitted, up to 48 hours". Android is a separate run (`google-play.md`).

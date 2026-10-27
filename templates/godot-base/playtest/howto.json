@@ -1,0 +1,12 @@
+[
+ {"t": 0.1, "do": "setting", "key": "force_howto", "value": true},
+ {"t": 1.0, "do": "expect_text", "text": "Play"},
+ {"t": 1.5, "do": "tap_text", "text": "Play"},
+ {"t": 2.6, "do": "expect_text", "text": "Got it"},
+ {"t": 2.7, "do": "mark", "name": "01_howto"},
+ {"t": 2.9, "do": "tap", "x": 120, "y": 300},
+ {"t": 3.2, "do": "expect_text", "text": "Got it"},
+ {"t": 3.3, "do": "tap_text", "text": "Got it"},
+ {"t": 3.8, "do": "mark", "name": "02_after_howto"},
+ {"t": 4.0, "do": "tap", "x": 540, "y": 960}
+]

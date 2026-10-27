@@ -1,0 +1,12 @@
+{
+  "name": "casual-blue",
+  "font": {"pack": "ui-pack", "file": "Font/Kenney Future Narrow.ttf"},
+  "font_size": 52,
+  "button": {
+    "normal":   {"pack": "ui-pack", "file": "PNG/Blue/Double/button_rectangle_depth_gradient.png", "margins": [40, 40, 40, 52], "content": [48, 22, 48, 34]},
+    "pressed":  {"pack": "ui-pack", "file": "PNG/Blue/Double/button_rectangle_flat.png", "margins": [40, 40, 40, 40], "content": [48, 34, 48, 22]},
+    "disabled": {"pack": "ui-pack", "file": "PNG/Grey/Double/button_rectangle_depth_flat.png", "margins": [40, 40, 40, 52], "content": [48, 22, 48, 34]}
+  },
+  "panel": {"pack": "ui-pack", "file": "PNG/Extra/Double/input_rectangle.png", "margins": [44, 44, 44, 44], "content": [56, 56, 56, 56]},
+  "palette": {"background": "#1d3557", "panel_tint": "#2a4a78", "text": "#ffffff", "slider_track": "#14243d", "slider_fill": "#3db8f5", "slider_knob": "#ffffff"}
+}

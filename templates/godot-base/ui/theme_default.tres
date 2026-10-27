@@ -1,0 +1,98 @@
+[gd_resource type="Theme" load_steps=12 format=3]
+
+[sub_resource type="StyleBoxFlat" id="btn_normal"]
+bg_color = Color(0.24, 0.26, 0.32, 1)
+corner_radius_top_left = 28
+corner_radius_top_right = 28
+corner_radius_bottom_right = 28
+corner_radius_bottom_left = 28
+content_margin_left = 40.0
+content_margin_top = 20.0
+content_margin_right = 40.0
+content_margin_bottom = 20.0
+
+[sub_resource type="StyleBoxFlat" id="btn_hover"]
+bg_color = Color(0.3, 0.33, 0.4, 1)
+corner_radius_top_left = 28
+corner_radius_top_right = 28
+corner_radius_bottom_right = 28
+corner_radius_bottom_left = 28
+content_margin_left = 40.0
+content_margin_top = 20.0
+content_margin_right = 40.0
+content_margin_bottom = 20.0
+
+[sub_resource type="StyleBoxFlat" id="btn_pressed"]
+bg_color = Color(0.17, 0.19, 0.24, 1)
+corner_radius_top_left = 28
+corner_radius_top_right = 28
+corner_radius_bottom_right = 28
+corner_radius_bottom_left = 28
+content_margin_left = 40.0
+content_margin_top = 20.0
+content_margin_right = 40.0
+content_margin_bottom = 20.0
+
+[sub_resource type="StyleBoxEmpty" id="empty"]
+
+[sub_resource type="StyleBoxFlat" id="panel"]
+bg_color = Color(0.13, 0.14, 0.18, 1)
+corner_radius_top_left = 40
+corner_radius_top_right = 40
+corner_radius_bottom_right = 40
+corner_radius_bottom_left = 40
+content_margin_left = 56.0
+content_margin_top = 56.0
+content_margin_right = 56.0
+content_margin_bottom = 56.0
+
+[sub_resource type="StyleBoxFlat" id="slider_track"]
+bg_color = Color(0.24, 0.26, 0.32, 1)
+corner_radius_top_left = 12
+corner_radius_top_right = 12
+corner_radius_bottom_right = 12
+corner_radius_bottom_left = 12
+content_margin_top = 12.0
+content_margin_bottom = 12.0
+
+[sub_resource type="StyleBoxFlat" id="slider_fill"]
+bg_color = Color(0.45, 0.6, 0.95, 1)
+corner_radius_top_left = 12
+corner_radius_top_right = 12
+corner_radius_bottom_right = 12
+corner_radius_bottom_left = 12
+content_margin_top = 12.0
+content_margin_bottom = 12.0
+
+[sub_resource type="StyleBoxFlat" id="backdrop"]
+bg_color = Color(0.09, 0.1, 0.14, 1)
+
+[sub_resource type="Gradient" id="knob_gradient"]
+offsets = PackedFloat32Array(0.9, 1)
+colors = PackedColorArray(1, 1, 1, 1, 1, 1, 1, 0)
+
+[sub_resource type="GradientTexture2D" id="knob"]
+gradient = SubResource("knob_gradient")
+width = 72
+height = 72
+fill = 1
+fill_from = Vector2(0.5, 0.5)
+fill_to = Vector2(1, 0.5)
+
+[resource]
+resource_name = "FACTORY_DEFAULT"
+default_font_size = 48
+Button/styles/disabled = SubResource("btn_normal")
+Button/styles/focus = SubResource("empty")
+Button/styles/hover = SubResource("btn_hover")
+Button/styles/hover_pressed = SubResource("btn_pressed")
+Button/styles/normal = SubResource("btn_normal")
+Button/styles/pressed = SubResource("btn_pressed")
+HSlider/icons/grabber = SubResource("knob")
+HSlider/icons/grabber_highlight = SubResource("knob")
+HSlider/styles/grabber_area = SubResource("slider_fill")
+HSlider/styles/grabber_area_highlight = SubResource("slider_fill")
+HSlider/styles/slider = SubResource("slider_track")
+PanelContainer/styles/panel = SubResource("panel")
+Backdrop/base_type = &"Panel"
+Backdrop/styles/panel = SubResource("backdrop")
