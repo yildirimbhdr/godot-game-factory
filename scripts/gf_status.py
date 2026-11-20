@@ -3,6 +3,7 @@
 
   gf_status.py show  <game>                       what each store has, version, ids, open manual steps
   gf_status.py table [workspace]                  one line per game (the "where is everything" view)
+  gf_status.py sync-apple <game|workspace>      ask App Store Connect (read-only, API key) and record what Apple has, source=api
   gf_status.py init  <game>                       create or upgrade status.json (migrates old formats, adds the manual to-do list)
   gf_status.py todo  <game>                       the manual steps still open, grouped, with what to enter
   gf_status.py done  <game> <id> [<id> ...]       tick manual steps (ids from `todo`)
@@ -105,6 +106,8 @@ def load(game: Path) -> dict:
         base = empty(game)
         for k, v in raw.items():
             base[k] = ({**base[k], **v} if isinstance(v, dict) and isinstance(base.get(k), dict) else v)
+        if not base["bundle_id"]:
+            base["bundle_id"] = _bundle_id(game)
         return base
     return migrate_legacy(raw, game)
 
@@ -280,6 +283,70 @@ def todo(game: Path, d: dict = None, header: bool = True) -> None:
         print("  nothing open")
 
 
+APPLE_STATE = {
+    "READY_FOR_SALE": "live", "READY_FOR_DISTRIBUTION": "live", "REPLACED_WITH_NEW_VERSION": "live",
+    "WAITING_FOR_REVIEW": "in_review", "IN_REVIEW": "in_review", "PENDING_APPLE_RELEASE": "in_review",
+    "PENDING_DEVELOPER_RELEASE": "in_review", "PROCESSING_FOR_APP_STORE": "in_review", "PROCESSING_FOR_DISTRIBUTION": "in_review",
+    "REJECTED": "rejected", "METADATA_REJECTED": "rejected", "INVALID_BINARY": "rejected",
+    "REMOVED_FROM_SALE": "removed", "DEVELOPER_REMOVED_FROM_SALE": "removed",
+    "PREPARE_FOR_SUBMISSION": "uploaded", "DEVELOPER_REJECTED": "uploaded",
+}
+
+
+def _fastlane_env() -> dict:
+    import os
+    env = dict(os.environ)
+    p = Path.home() / ".game-factory" / "fastlane.env"
+    if p.is_file():
+        for line in p.read_text().splitlines():
+            m = re.match(r'\s*export\s+(\w+)=(?:"([^"]*)"|(\S*))', line)
+            if m:
+                env[m.group(1)] = (m.group(2) if m.group(2) is not None else m.group(3)).replace("$HOME", str(Path.home()))
+    env["FASTLANE_SKIP_UPDATE_CHECK"] = "1"
+    return env
+
+
+def sync_apple(game: Path) -> dict:
+    """Ask App Store Connect (read-only, through the API key) what Apple has, and record it with source=api."""
+    import shutil, subprocess, tempfile
+    d = load(game)
+    bundle = d["bundle_id"]
+    if not bundle:
+        print(f"{game.name}: no bundle id")
+        return d
+    env = _fastlane_env()
+    if not env.get("GF_ASC_KEY_ID") or not env.get("GF_ASC_ISSUER_ID"):
+        print("App Store Connect API key is not set up (scripts/fastlane_setup.sh)")
+        return d
+    env["GF_BUNDLE"] = bundle
+    with tempfile.TemporaryDirectory() as tmp:
+        (Path(tmp) / "fastlane").mkdir()
+        shutil.copy(HERE.parent / "templates" / "fastlane" / "Fastfile.probe", Path(tmp) / "fastlane" / "Fastfile")
+        r = subprocess.run(["fastlane", "ios", "probe"], cwd=tmp, env=env, capture_output=True, text=True, timeout=180)
+    lines = [re.sub(r"^.*?GF_ASC ", "", l) for l in (r.stdout + r.stderr).splitlines() if "GF_ASC" in l]
+    if not lines:
+        print(f"{game.name}: App Store Connect did not answer ({(r.stderr or r.stdout).strip().splitlines()[-1:]})")
+        return d
+    if lines[0].strip() == "none":
+        d = record_store(game, "apple", "none", source="api", note="No app record in App Store Connect for " + bundle)
+        print(f"{game.name}: no app record for {bundle}")
+        return d
+    app_id = re.search(r"app_id=(\S+)", lines[0]).group(1)
+    versions = [dict(re.findall(r"(\w+)=(\S+)", l)) for l in lines if l.startswith("version=")]
+    builds = [dict(re.findall(r"(\w+)=(\S+)", l)) for l in lines if l.startswith("build=")]
+    top = versions[0] if versions else {}
+    raw = top.get("state", "")
+    state = APPLE_STATE.get(raw, "uploaded" if raw else "none")
+    if state == "uploaded" and not builds:
+        state = "none"
+    build = int(builds[0]["build"]) if builds and builds[0]["build"].isdigit() else 0
+    d = record_store(game, "apple", state, top.get("version", ""), build, source="api", note=f"App Store Connect says {raw or 'no version'} (app id {app_id})")
+    d["apple"]["app_id"] = app_id
+    save(game, d)
+    print(f"{game.name}: apple {state} {top.get('version', '')} (build {build}) <- {raw}")
+    return d
+
+
 def games_in(workspace: Path) -> list:
     return sorted(p.parent for p in workspace.glob("*/project.godot"))
 
@@ -293,6 +360,11 @@ def main(argv: list) -> int:
         ws = Path(argv[2] if len(argv) > 2 else ".").expanduser().resolve()
         for g in games_in(ws):
             print(line(refresh_ids(load(g), g), g.name))
+        return 0
+    if cmd == "sync-apple":
+        target = Path(argv[2] if len(argv) > 2 else ".").expanduser().resolve()
+        for g in ([target] if (target / "project.godot").is_file() else games_in(target)):
+            sync_apple(g)
         return 0
     game = Path(argv[2]).resolve()
     if cmd == "show":

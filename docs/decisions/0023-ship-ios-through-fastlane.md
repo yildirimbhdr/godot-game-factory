@@ -8,4 +8,6 @@ Date: 2026-11-20. Status: accepted (user request, after the Android route in 002
 
 **Not changed:** the app record, App Privacy, age rating, review contact and "Add for Review" remain manual. No browser is used for publishing.
 
-**Open:** the lanes have to meet a real account once; an iOS AdMob app and units are needed before a game with ads passes the iOS preflight.
+**Also (same day):** `gf_status.py sync-apple` reads the truth from App Store Connect (template `Fastfile.probe`). It showed that notes were wrong in two places (Unwind is REJECTED, not in review; Snake Fill has no app record). The API key can register a Bundle ID but cannot create the app record.
+
+**Open:** the lanes `wait_build`/`metadata`/`submit` have to meet a real account once; an iOS AdMob app and units are needed before a game with ads passes the iOS preflight.
