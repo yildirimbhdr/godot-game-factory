@@ -189,6 +189,10 @@ def check_ios(game: Path, ctx: dict, rep: Report, reuse_build: bool = False) -> 
         rep.add("PASS" if ok else "WARN", "signing identity", "an Apple signing certificate is in the keychain" if ok else "none found (Xcode > Settings > Accounts > Manage Certificates)")
     except Exception:
         pass
+    url_file = game / "store" / "review_video_url.txt"
+    has_url = url_file.is_file() and url_file.read_text().strip().startswith("http")
+    rep.add("PASS" if has_url else "FAIL", "App Review screen recording",
+            url_file.read_text().strip() if has_url else "no link: Apple now rejects apps without a screen recording of the app on a physical device. Record it on the phone, host it and save the link in store/review_video_url.txt")
     ff = game / "fastlane" / "Fastfile"
     rep.add("PASS" if ff.is_file() else "WARN", "fastlane project", "fastlane/Fastfile present" if ff.is_file() else "missing: ship.sh runs fastlane_prepare.py for you")
 

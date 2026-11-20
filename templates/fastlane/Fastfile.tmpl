@@ -58,6 +58,17 @@ platform :ios do
     end
   end
 
+  desc "Attach a processed build to the editable version (deliver with skip_binary_upload does not). Usage: fastlane ios attach_build build:3"
+  lane :attach_build do |options|
+    app, builds = asc_app_and_builds
+    version = app.get_edit_app_store_version(platform: Spaceship::ConnectAPI::Platform::IOS)
+    UI.user_error!("no editable App Store version for __BUNDLE__") if version.nil?
+    build = builds.find { |b| b.version.to_s == options[:build].to_s && b.processing_state == "VALID" }
+    UI.user_error!("build #{options[:build]} is not processed (VALID) yet") if build.nil?
+    version.select_build(build_id: build.id)
+    UI.message("GF_ASC attached build=#{build.version} to version=#{version.version_string}")
+  end
+
   desc "Texts and screenshots to App Store Connect (no review submission). Usage: fastlane ios metadata [version:1.1.0]"
   lane :metadata do |options|
     ensure_review_detail

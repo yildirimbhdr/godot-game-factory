@@ -16,4 +16,27 @@ platform :ios do
       app.get_builds(sort: "-uploadedDate", limit: 5).each { |b| UI.message("GF_ASC build=#{b.version} processing=#{b.processing_state}") }
     end
   end
+
+  desc "Send review notes and contact to the editable version of any app (env GF_NOTES_FILE, GF_CONTACT_*). No submission."
+  lane :review_info do
+    app_store_connect_api_key(
+      key_id: ENV.fetch("GF_ASC_KEY_ID"), issuer_id: ENV.fetch("GF_ASC_ISSUER_ID"),
+      key_filepath: ENV.fetch("GF_ASC_KEY_PATH"), in_house: false
+    )
+    app = Spaceship::ConnectAPI::App.find(ENV.fetch("GF_BUNDLE"))
+    UI.user_error!("no app record for #{ENV['GF_BUNDLE']}") if app.nil?
+    version = app.get_edit_app_store_version(platform: Spaceship::ConnectAPI::Platform::IOS)
+    UI.user_error!("no editable App Store version (state must be prepare for submission or rejected)") if version.nil?
+    detail = begin
+      version.fetch_app_store_review_detail
+    rescue StandardError
+      version.create_app_store_review_detail(attributes: { demo_account_required: false })
+    end
+    attrs = { notes: File.read(ENV.fetch("GF_NOTES_FILE")) }
+    { contact_first_name: "GF_CONTACT_FIRST", contact_last_name: "GF_CONTACT_LAST", contact_email: "GF_CONTACT_EMAIL", contact_phone: "GF_CONTACT_PHONE" }.each do |attr, key|
+      attrs[attr] = ENV[key] unless ENV[key].to_s.empty?
+    end
+    detail.update(attributes: attrs)
+    UI.message("GF_ASC review info updated for version=#{version.version_string} state=#{version.app_store_state} notes_chars=#{attrs[:notes].size}")
+  end
 end

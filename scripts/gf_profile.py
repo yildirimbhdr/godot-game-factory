@@ -15,7 +15,7 @@ import json, sys
 from pathlib import Path
 
 PATH = Path.home() / ".game-factory" / "profile.json"
-DEFAULTS = {"developer_name": "", "brand": "", "public_contact_email": "", "default_locales": ["en"], "workspace": "",
+DEFAULTS = {"review_phone": "", "developer_name": "", "brand": "", "public_contact_email": "", "default_locales": ["en"], "workspace": "",
             "firebase_project": "", "android_keystore": "", "android_keychain_service": "game-factory-android-upload",
             "website": "", "support_url": "", "hosting_site": ""}
 
