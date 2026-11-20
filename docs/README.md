@@ -29,3 +29,4 @@ Maintenance rule: when the user approves, rejects or changes a tool, sound, asse
 | First end-to-end release | [0019](decisions/0019-first-end-to-end-release.md) | Unwind live on Google Play about two hours after review submission; what made it fast and what still needs the user |
 | Slide-maze levels | [0020](decisions/0020-slide-maze-realtime-patrols.md) | Reachability pass for rewards, solution-first labyrinth factory, real-time patrols in crossing alcoves with a phase-aware solver |
 | /new-game director | [0021](decisions/0021-new-game-director.md) | One guided entry point: step-by-step brief, approval gate, PLAN.md phases, resumable; keystore comes from the profile |
+| One-command ship + one status file | [0022](decisions/0022-one-command-ship-and-one-status-file.md) | ship.sh (preflight, new or update, AAB manifest check, recording, manual step list), a form answer page from brief.json, store/status.json schema 2 for every game |

@@ -46,3 +46,9 @@ production countries, AI-generated asset labels, and the first AAB upload when t
 - Locale codes differ: Apple `en-US`, `tr`; Play `en-US`, `tr-TR`. The prepare script maps them.
 - Do not edit store pages by hand after a lane run without telling the next run: deliver overwrites with `force: true`.
 - If a lane fails on screenshot sizes or locales, read fastlane's message first; do not fall back to the browser unless the user asks.
+
+## Google Play without the browser: ship.sh (0.8)
+`scripts/play_publish/ship.sh <game> [--track T] [--notes-en TXT --notes-tr TXT] [--dry]` runs `preflight.py` (definition of done for Android, package names, listing, graphics, live privacy/support pages, app-ads.txt, keys), then `publish_new.sh` or `publish_update.sh` (chosen from `store/status.json`), checks the built AAB (real AdMob app id in the manifest), uploads a draft, records it with `gf_status.py` and prints the steps that stay manual. `store_declarations.py` writes `store/declarations.html` (one page of copyable answers with tick boxes). Every game keeps one `store/status.json` (schema 2, see `scripts/gf_status.py`), which the dashboard reads.
+- Account permission: the service account needs "Create, edit, and delete draft apps" as well, or the store listing of a brand-new (never published) app is refused with "The caller does not have permission". The AAB upload works without it.
+- `publish_listing.sh` passes `--track` and `--version_code`; supply otherwise fails with "Could not find release for version code ''".
+- Godot rewrites `project.godot` when it saves the project and can drop the `[admob]` section; `dod_check.py --release` and the AAB check catch it.

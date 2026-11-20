@@ -22,8 +22,11 @@ AAB="$GAMES/_builds/$1-$(grep -E '^version/name=' "$G/export_presets.cfg" | head
 mkdir -p "$GAMES/_builds"
 [ -f "$AAB" ] || bash "$PLUGIN_SCRIPTS/android_release.sh" "$G" "$AAB"
 echo "aab: $AAB"
+python3 "$HERE_PLUGIN/preflight.py" "$G" --aab "$AAB" || { echo "the built bundle failed its check, nothing uploaded"; exit 1; }
 [ "$DRY" = "--dry" ] && { echo "dry run: nothing uploaded"; exit 0; }
 need_key
 fastlane supply --json_key "$KEY" --package_name "$PKG" --aab "$AAB" --track "$TRACK" --release_status draft \
   --metadata_path "$WORK/metadata" --skip_upload_changelogs false
-echo "uploaded as a DRAFT on '$TRACK'. Review + 'Send for review' in Play Console stays with you."
+NAME="$(grep -E '^version/name=' "$G/export_presets.cfg" | head -1 | cut -d'"' -f2)"
+python3 "$PLUGIN_SCRIPTS/release.py" store "$G" play uploaded --track "$TRACK" --version "$NAME" --build "$CODE" >/dev/null
+echo "uploaded as a DRAFT on '$TRACK' (recorded in store/status.json). Review + 'Send for review' in Play Console stays with you."

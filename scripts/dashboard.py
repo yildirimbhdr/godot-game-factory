@@ -13,7 +13,7 @@ from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE))
-import gf_profile, dod_check, store_listing_check, release  # noqa: E402
+import gf_profile, dod_check, store_listing_check, release, gf_status  # noqa: E402
 
 
 def cfg_value(text: str, key: str, default=""):
@@ -92,6 +92,10 @@ def inspect(game: Path) -> dict:
         s["status"] = json.loads((store / "status.json").read_text()) if (store / "status.json").is_file() else {}
     g["store"] = s
     g["release"] = release.load(game) if (game / "export_presets.cfg").is_file() else None
+    try:   # the one status file: store states, ids and the manual steps that no API can do
+        g["status2"] = gf_status.refresh_ids(gf_status.load(game), game)
+    except Exception:
+        g["status2"] = None
     g["changelog_open"] = []
     cl = game / "CHANGELOG.md"
     if cl.is_file():
@@ -121,8 +125,9 @@ def release_block(g: dict) -> str:
     r = g["release"]
     n_open = len(g["changelog_open"])
     rows = [f'<tr><td>In development</td><td><b>{esc(r["version"])}</b> (build {esc(r["build"])})</td><td>{pill(not n_open, "no unreleased notes", f"{n_open} unreleased note(s)")}</td></tr>']
+    st2 = g.get("status2") or {}
     for key, label in (("play", "Google Play"), ("apple", "App Store")):
-        cur = r["stores"].get(key)
+        cur = st2.get(key) if st2.get(key, {}).get("state", "none") != "none" else r["stores"].get(key)
         if not cur:
             rows.append(f"<tr><td>{label}</td><td>-</td><td>{pill(False, '', 'nothing recorded')}</td></tr>")
             continue
@@ -157,9 +162,10 @@ def card(g: dict) -> str:
     st = s.get("status", {})
     checks.append(("Privacy policy URL live", bool(st.get("privacy_url")), "no"))
     rel = g.get("release")
+    st2 = g.get("status2") or {}
     for key, label in (("play", "Live on Google Play"), ("apple", "Live on App Store")):
-        cur = (rel or {}).get("stores", {}).get(key)
-        checks.append((label, bool(cur and cur["state"] == "live" and cur["version"] == rel["version"]), cur["state"] if cur else "not submitted"))
+        cur = st2.get(key) if st2.get(key, {}).get("state", "none") != "none" else (rel or {}).get("stores", {}).get(key)
+        checks.append((label, bool(cur and cur["state"] == "live"), cur["state"] if cur else "not submitted"))
     done = sum(1 for _, ok, _ in checks if ok)
     lis = "".join(f'<li>{pill(ok, "done", why)} {esc(name)}</li>' for name, ok, why in checks)
     extra = ""
@@ -171,6 +177,10 @@ def card(g: dict) -> str:
         extra += f'<p class="small">Privacy URL: {esc(st["privacy_url"])}</p>'
     if g["git"]:
         extra += f'<p class="small">git: {esc(g["git"]["commit"])}{" (uncommitted changes)" if g["git"]["dirty"] else ""}</p>'
+    open_steps = gf_status.open_manual(st2) if st2 else []
+    if open_steps:
+        extra += (f'<details><summary>Your steps still open ({len(open_steps)})</summary><ul>'
+                  + "".join(f'<li><b>{esc(m["store"])}</b> {esc(m["text"])}' + (f' <span class="small">({esc(m["hint"])})</span>' if m["hint"] else "") + "</li>" for m in open_steps) + "</ul></details>")
     if g["dod_fails"]:
         extra += "<details><summary>Definition of Done: open items</summary><ul>" + "".join(f"<li>{esc(f)}</li>" for f in g["dod_fails"]) + "</ul></details>"
     return (f'<article class="game"><header><h3>{esc(g["name"])}</h3><span class="prog">{done}/{len(checks)}</span></header>'

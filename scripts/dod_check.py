@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Definition of Done gate for a Godot game project (automated half of the checklist).
 
-  dod_check.py <project-dir> [--json] [--release]
+  dod_check.py <project-dir> [--json] [--release] [--platform android|ios]
 
 Exit 0 when every automated check passes, 1 otherwise (failures printed one per line).
 Checks (see skills/playtest-verify for the manual half that DOD.md records):
@@ -36,7 +36,7 @@ def newest_source(project: Path) -> float:
     return max((p.stat().st_mtime for p in sources(project)), default=0.0)
 
 
-def check_monetization(project: Path, release: bool) -> list[str]:
+def check_monetization(project: Path, release: bool, platforms=("android", "ios")) -> list[str]:
     fails = []
     if not (project / "addons" / "admob").is_dir():
         return fails
@@ -54,10 +54,11 @@ def check_monetization(project: Path, release: bool) -> list[str]:
         block = live.group(1) if live else ""
         if not uses_inter:   # a rewarded-only game does not need interstitial ids
             block = re.sub(r'"interstitial":[^\n]*', "", block)
-        if not live or re.search(r'""', block):
-            fails.append("monetize(release): LIVE_UNITS in autoload/ads.gd still has empty ad unit ids")
+        for platform in platforms:   # an Android-only release does not need the iOS ids (and the other way round)
+            if not live or re.search(r'"%s":\s*""' % platform, block):
+                fails.append(f"monetize(release): LIVE_UNITS in autoload/ads.gd still has an empty {platform} ad unit id")
         ids = dict(re.findall(r'^general/(android|ios)/app_id="([^"]*)"', (project / "project.godot").read_text(), re.M))
-        for platform in ("android", "ios"):
+        for platform in platforms:
             app_id = ids.get(platform, "")
             if not app_id or app_id.startswith("ca-app-pub-3940256099942544"):
                 fails.append(f"monetize(release): [admob] general/{platform}/app_id in project.godot is missing or Google's test app id")
@@ -79,7 +80,7 @@ def check_plan(project: Path, release: bool) -> list[str]:
     return fails
 
 
-def check(project: Path, release: bool = False) -> list[str]:
+def check(project: Path, release: bool = False, platforms=("android", "ios")) -> list[str]:
     fails = []
     pg = project / "project.godot"
     if not pg.is_file():
@@ -137,7 +138,7 @@ def check(project: Path, release: bool = False) -> list[str]:
                      "(run scripts/playtest.sh at default, --resolution 450x975 --notch, --resolution 600x800)")
 
     fails += check_plan(project, release)
-    fails += check_monetization(project, release)
+    fails += check_monetization(project, release, platforms)
 
     dod = project / "DOD.md"
     if not dod.is_file():
@@ -155,7 +156,10 @@ if __name__ == "__main__":
     if len(sys.argv) < 2:
         sys.exit(__doc__)
     proj = Path(sys.argv[1]).resolve()
-    problems = check(proj, "--release" in sys.argv)
+    plats = ("android", "ios")
+    if "--platform" in sys.argv:
+        plats = (sys.argv[sys.argv.index("--platform") + 1],)
+    problems = check(proj, "--release" in sys.argv, plats)
     if "--json" in sys.argv:
         print(json.dumps({"project": str(proj), "ok": not problems, "failures": problems}))
     else:

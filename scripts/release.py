@@ -11,11 +11,13 @@
 Versioning (semantic): patch = fixes and tuning, minor = new levels, worlds or features, major = redesign or a new
 core loop. The build number (Android version/code, iOS CFBundleVersion) rises on every bump and never goes back, for
 both stores, because the stores reject a build number they have seen before.
-store/releases.json is the source of truth the dashboard reads. Stores are only ever recorded here after the
+store/releases.json holds versions and history; the store states are mirrored into store/status.json (gf_status.py), which the dashboard reads. Stores are only ever recorded here after the
 user (or Claude with the user's go-ahead) actually did the step in the store console.
 """
 import json, re, sys, time
 from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).resolve().parent))
 
 STATES = {"uploaded", "internal_test", "in_review", "live", "rejected", "removed"}
 
@@ -125,6 +127,9 @@ def main(argv):
         d["stores"][store] = {"version": opt.get("--version", d["version"]), "build": int(opt.get("--build", d["build"])),
                               "state": state, "track": opt.get("--track", ""), "updated": time.strftime("%Y-%m-%d")}
         save(game, d)
+        import gf_status   # the one status file every tool reads; keeps store/status.json in step with releases.json
+        s = d["stores"][store]
+        gf_status.record_store(game, store, state, s["version"], s["build"], s["track"], source=opt.get("--source", "script"))
         return cmd_show(game)
 
 
