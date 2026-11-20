@@ -3,14 +3,24 @@
 Why: driving App Store Connect and Play Console in Chrome cost far too many tokens. Texts, images and builds are already files, so fastlane uploads
 them with one command. Claude's job ends at "the release package is ready"; the user (or a cheap script run) does the rest.
 
+## Google Play: the tested route (scripts/play_publish, 2026-11-20)
+Verified on Snake Fill 1.1.0 (AAB uploaded as a production draft with EN+TR notes, no browser). Run from inside the games folder; these replace `fastlane_prepare.py`/`fl.sh` for Android.
+- `scripts/play_publish/publish_new.sh <game> [track=internal] [--dry]`: privacy+support site -> Firebase hosting (`_site`), store texts + icon + feature graphic + screenshots -> Play, signed AAB -> Play as a **draft**. Not yet run on a brand-new app record (dry run only); expect small fixes on first real use.
+- `scripts/play_publish/publish_update.sh <game> "EN notes" "TR notes" [version] [track=production] [--dry]`: bumps version code/name (and iOS build), builds the AAB, uploads it with release notes as a draft. Texts/images untouched.
+- `scripts/play_publish/publish_listing.sh <game>`: refresh only texts/images (needed only when listing text or screenshots change).
+- Key: `~/.game-factory/play-service-account.json` (or `$PLAY_JSON_KEY`; the old `keys/` path is also accepted). Never in git.
+- **Service account permissions (account level, all apps)**: *Release to production, exclude devices, and use Play App Signing*, *Release apps to testing tracks*, *Manage store presence* **and** *View app information and download bulk reports (read-only)*. Without the last one every upload fails with `403 The caller does not have permission` even though the others are ticked (lesson 0058). Save and allow a few minutes.
+- Do not retry a failing upload in a loop (ban risk): fix the cause, then one try.
+- A one-off release of an already built AAB: `fastlane supply --json_key $KEY --package_name <pkg> --aab <file> --track production --release_status draft --skip_upload_metadata --skip_upload_images --skip_upload_screenshots`.
+- Still manual per new app (no API): create the app in Play Console, privacy URL field, Data safety, content rating, ads declaration, target audience, production countries, and the final "Send for review". `store_declarations.py` has the answers.
+
 ## One-time setup (per Mac, ~20 minutes)
 1. `scripts/fastlane_setup.sh` prints what is missing and creates `~/.game-factory/fastlane.env` and `~/.game-factory/keys/` (chmod 700).
 2. `brew install fastlane`
 3. **App Store Connect API key**: appstoreconnect.apple.com > Users and Access > Integrations > App Store Connect API > Team Keys > Generate (role **App Manager**).
    Download `AuthKey_XXXX.p8` once, save it as `~/.game-factory/keys/AuthKey.p8` (chmod 600), put Key ID and Issuer ID into `~/.game-factory/fastlane.env`.
 4. **Play service account**: Play Console > Setup > API access (account level) > link or create a Google Cloud project > Create new service account (Google Cloud opens)
-   > add a JSON key and download it > back in Play Console grant that account access to your apps with the permissions *Release to production, exclude devices, and use Play App Signing*
-   and *Manage store presence*. Save the JSON as `~/.game-factory/keys/play-service-account.json` (chmod 600). Allow up to a few hours for it to become active.
+   > add a JSON key and download it > back in Play Console grant that account ACCOUNT-level permissions (covers all current and future apps): *Release to production, exclude devices, and use Play App Signing*, *Release apps to testing tracks*, *Manage store presence* and *View app information and download bulk reports (read-only)* (the last one is required, see above). Save the JSON as `~/.game-factory/keys/play-service-account.json` (chmod 600). Allow up to a few hours for it to become active.
 5. The upload keystore stays in `~/.game-factory/keystores/` with its password in the macOS Keychain (already used by `android_release.sh`).
 
 ## Per game
