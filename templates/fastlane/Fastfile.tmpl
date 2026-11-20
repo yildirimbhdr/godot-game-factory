@@ -18,6 +18,21 @@ def asc_app_and_builds
   [app, app.get_builds(sort: "-uploadedDate", limit: 5)]
 end
 
+# A brand-new version has no App Review Information record yet and deliver fails with "No data" (fastlane issue 20538). Create an empty one;
+# contact name, phone and email stay yours to enter in App Store Connect before "Add for Review".
+def ensure_review_detail
+  asc_key
+  app = Spaceship::ConnectAPI::App.find("__BUNDLE__")
+  version = app && app.get_edit_app_store_version(platform: Spaceship::ConnectAPI::Platform::IOS)
+  return if version.nil?
+  begin
+    version.fetch_app_store_review_detail
+  rescue StandardError
+    version.create_app_store_review_detail(attributes: { demo_account_required: false })
+    UI.message("created an empty App Review Information record")
+  end
+end
+
 platform :ios do
   desc "Read-only: does the app record exist, which versions and builds does Apple have (output lines start with GF_ASC)"
   lane :status do
@@ -45,6 +60,7 @@ platform :ios do
 
   desc "Texts and screenshots to App Store Connect (no review submission). Usage: fastlane ios metadata [version:1.1.0]"
   lane :metadata do |options|
+    ensure_review_detail
     deliver(
       api_key: asc_key,
       app_identifier: "__BUNDLE__",

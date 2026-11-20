@@ -10,4 +10,6 @@ Date: 2026-11-20. Status: accepted (user request, after the Android route in 002
 
 **Also (same day):** `gf_status.py sync-apple` reads the truth from App Store Connect (template `Fastfile.probe`). It showed that notes were wrong in two places (Unwind is REJECTED, not in review; Snake Fill has no app record). The API key can register a Bundle ID but cannot create the app record.
 
-**Open:** the lanes `wait_build`/`metadata`/`submit` have to meet a real account once; an iOS AdMob app and units are needed before a game with ads passes the iOS preflight.
+**Verified (Cat Logic, same day):** build upload, `wait_build` and `metadata` ran end to end on a real account. Fixes found by that run: empty App Review Information record before `deliver`, `copyright.txt` from the profile's developer name, `--no-build` reruns skip the build-number check (`preflight.py --reuse-build`).
+
+**Open:** the `submit` lane has not run yet; an iOS AdMob app and units are needed before a game with ads passes the iOS preflight.

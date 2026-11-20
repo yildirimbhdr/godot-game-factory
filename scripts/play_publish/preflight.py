@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Checks before a Play upload, so a release never goes out with a mistake that is cheap to catch.
 
-  preflight.py <game-dir> [--platform android|ios] [--offline] [--aab FILE]
+  preflight.py <game-dir> [--platform android|ios] [--offline] [--reuse-build] [--aab FILE]
 
 Without --aab: checks the project (before the build).
 With --aab:    checks the built bundle itself (the real proof: the AdMob app id inside its manifest).
@@ -137,7 +137,7 @@ def check_android(game: Path, ctx: dict, rep: Report) -> None:
     rep.add("PASS" if ks else "FAIL", "upload keystore", ks[0].name if ks else "no keystore in ~/.game-factory/keystores")
 
 
-def check_ios(game: Path, ctx: dict, rep: Report) -> None:
+def check_ios(game: Path, ctx: dict, rep: Report, reuse_build: bool = False) -> None:
     bundle, presets, st = ctx["bundle"], ctx["presets"], ctx["status"]
     i = preset_section(presets, "iOS")
     ios_bundle = (re.search(r'^application/bundle_identifier="([^"]*)"', i, re.M) or [None, ""])[1]
@@ -150,7 +150,9 @@ def check_ios(game: Path, ctx: dict, rep: Report) -> None:
     short = (re.search(r'^application/short_version="([^"]*)"', i, re.M) or [None, ""])[1]
     build = int((re.search(r'^application/version="(\d+)"', i, re.M) or [None, 0])[1])
     last = int(st["apple"].get("build") or 0)
-    if st["apple"]["state"] != "none" and last and build <= last:
+    if reuse_build:
+        rep.add("PASS", "build number", f"{short} ({build}): reusing the build that is already uploaded (--no-build)")
+    elif st["apple"]["state"] != "none" and last and build <= last:
         rep.add("FAIL", "build number", f"iOS build {build} was already uploaded ({st['apple']['state']}, build {last}); bump it first: release.py bump <game> patch")
     else:
         rep.add("PASS", "build number", f"{short} ({build}); Apple has {last or 'nothing recorded'}")
@@ -191,9 +193,12 @@ def check_ios(game: Path, ctx: dict, rep: Report) -> None:
     rep.add("PASS" if ff.is_file() else "WARN", "fastlane project", "fastlane/Fastfile present" if ff.is_file() else "missing: ship.sh runs fastlane_prepare.py for you")
 
 
-def check_project(game: Path, platform: str, offline: bool, rep: Report) -> None:
+def check_project(game: Path, platform: str, offline: bool, rep: Report, reuse_build: bool = False) -> None:
     ctx = check_common(game, platform, offline, rep)
-    (check_ios if platform == "ios" else check_android)(game, ctx, rep)
+    if platform == "ios":
+        check_ios(game, ctx, rep, reuse_build)
+    else:
+        check_android(game, ctx, rep)
 
 
 def check_aab(game: Path, aab: Path, rep: Report) -> None:
@@ -233,5 +238,5 @@ if __name__ == "__main__":
         args = [a for a in args if a != str(aab)]
         check_aab(game, aab, rep)
     else:
-        check_project(game, platform, "--offline" in sys.argv, rep)
+        check_project(game, platform, "--offline" in sys.argv, rep, "--reuse-build" in sys.argv)
     sys.exit(1 if rep.failed else 0)

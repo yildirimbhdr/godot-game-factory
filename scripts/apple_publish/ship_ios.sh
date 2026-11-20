@@ -25,7 +25,7 @@ preset() { sed -n "s#^$1=\"\(.*\)\"#\1#p" "$G/export_presets.cfg" | head -1; }  
 VER="$(preset application/short_version)"; BUILD="$(preset application/version)"
 
 echo "== 1/5 preflight (ios) $GAME"
-python3 "$HERE_PLUGIN/preflight.py" "$G" --platform ios || { echo; echo "Fix the FAIL lines above, then run again."; exit 1; }
+python3 "$HERE_PLUGIN/preflight.py" "$G" --platform ios ${NOBUILD:+--reuse-build} || { echo; echo "Fix the FAIL lines above, then run again."; exit 1; }
 
 echo; echo "== 2/5 fastlane project"
 FIRST=""; [ "$(st state)" = "none" ] && FIRST="--first"
