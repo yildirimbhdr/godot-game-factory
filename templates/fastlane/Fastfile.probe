@@ -39,4 +39,74 @@ platform :ios do
     detail.update(attributes: attrs)
     UI.message("GF_ASC review info updated for version=#{version.version_string} state=#{version.app_store_state} notes_chars=#{attrs[:notes].size}")
   end
+
+  desc "Fill what App Store Connect lists as missing before Add for Review: content rights, categories, age rating, free price. Env GF_SETUP_JSON."
+  lane :app_setup do
+    app_store_connect_api_key(
+      key_id: ENV.fetch("GF_ASC_KEY_ID"), issuer_id: ENV.fetch("GF_ASC_ISSUER_ID"),
+      key_filepath: ENV.fetch("GF_ASC_KEY_PATH"), in_house: false
+    )
+    cfg = JSON.parse(ENV.fetch("GF_SETUP_JSON"))
+    app = Spaceship::ConnectAPI::App.find(ENV.fetch("GF_BUNDLE"))
+    UI.user_error!("no app record for #{ENV['GF_BUNDLE']}") if app.nil?
+    app.update(attributes: { content_rights_declaration: cfg["content_rights"] })
+    UI.message("GF_ASC content_rights=#{cfg['content_rights']}")
+    info = app.fetch_edit_app_info
+    info.update_categories(category_id_map: cfg["categories"].transform_keys(&:to_sym))
+    UI.message("GF_ASC categories=#{cfg['categories'].values.join(',')}")
+    info.fetch_age_rating_declaration.update(attributes: cfg["age_rating"].transform_keys(&:to_sym))
+    UI.message("GF_ASC age_rating set")
+    if cfg["free"]
+      c = Spaceship::ConnectAPI.tunes_request_client
+      points = c.get("v1/apps/#{app.id}/appPricePoints", { "filter[territory]" => "USA", "limit" => 200 }).body["data"]
+      free = points.find { |p| p["attributes"]["customerPrice"].to_f == 0.0 }
+      UI.user_error!("no free price point found") if free.nil?
+      c.post("v1/appPriceSchedules", {
+        data: { type: "appPriceSchedules", relationships: {
+          app: { data: { type: "apps", id: app.id } },
+          baseTerritory: { data: { type: "territories", id: "USA" } },
+          manualPrices: { data: [{ type: "appPrices", id: "${p1}" }] } } },
+        included: [{ type: "appPrices", id: "${p1}", attributes: { startDate: nil }, relationships: { appPricePoint: { data: { type: "appPricePoints", id: free["id"] } } } }]
+      })
+      UI.message("GF_ASC price=free")
+    end
+  end
+
+  desc "Read-only: what is still missing before Add for Review (lines start with GF_ASC ready)"
+  lane :readiness do
+    app_store_connect_api_key(
+      key_id: ENV.fetch("GF_ASC_KEY_ID"), issuer_id: ENV.fetch("GF_ASC_ISSUER_ID"),
+      key_filepath: ENV.fetch("GF_ASC_KEY_PATH"), in_house: false
+    )
+    app = Spaceship::ConnectAPI::App.find(ENV.fetch("GF_BUNDLE"))
+    UI.user_error!("no app record for #{ENV['GF_BUNDLE']}") if app.nil?
+    version = app.get_edit_app_store_version(platform: Spaceship::ConnectAPI::Platform::IOS, includes: "build,appStoreReviewDetail")
+    info = app.fetch_edit_app_info
+    age = info.fetch_age_rating_declaration
+    c = Spaceship::ConnectAPI.tunes_request_client
+    price = begin
+      c.get("v1/apps/#{app.id}/appPriceSchedule", {}); true
+    rescue StandardError
+      false
+    end
+    detail = begin
+      version&.fetch_app_store_review_detail
+    rescue StandardError
+      nil
+    end
+    shots = version ? version.get_app_store_version_localizations.map { |l| l.get_app_screenshot_sets(includes: "appScreenshots").sum { |s| (s.app_screenshots || []).size } } : []
+    ready = {
+      "content_rights" => !app.content_rights_declaration.nil?,
+      "category" => !info.primary_category.nil?,
+      "age_rating" => !age.violence_realistic.nil?,
+      "price" => price,
+      "build_attached" => !(version && version.build).nil?,
+      "screenshots" => !shots.empty? && shots.all? { |n| n > 0 },
+      "contact_name" => !detail.nil? && !detail.contact_first_name.to_s.empty? && !detail.contact_last_name.to_s.empty?,
+      "contact_email" => !detail.nil? && !detail.contact_email.to_s.empty?,
+      "contact_phone" => !detail.nil? && !detail.contact_phone.to_s.empty?,
+      "review_notes" => !detail.nil? && detail.notes.to_s.size > 50
+    }
+    ready.each { |k, v| UI.message("GF_ASC ready #{k}=#{v}") }
+  end
 end

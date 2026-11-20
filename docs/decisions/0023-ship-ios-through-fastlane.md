@@ -13,3 +13,5 @@ Date: 2026-11-20. Status: accepted (user request, after the Android route in 002
 **Verified (Cat Logic, same day):** build upload, `wait_build` and `metadata` ran end to end on a real account. Fixes found by that run: empty App Review Information record before `deliver`, `copyright.txt` from the profile's developer name, `--no-build` reruns skip the build-number check (`preflight.py --reuse-build`).
 
 **Open:** the `submit` lane has not run yet; an iOS AdMob app and units are needed before a game with ads passes the iOS preflight.
+
+**Addendum (same day): "Unable to Add for Review".** Content rights, categories, age rating and the free price are now filled by `app_setup.py` through the API (verified on Cat Logic; the old `app_price_tier_id` call fails, the new `appPriceSchedules` POST works). App Privacy has no API for API keys and stays manual; the review contact needs a phone number (profile key `review_phone`); the review notes need the screen-recording link (lesson 0060).

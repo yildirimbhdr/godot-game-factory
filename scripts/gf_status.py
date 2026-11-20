@@ -204,9 +204,13 @@ def manual_catalog(game: Path, d: dict) -> list:
         ]
     if d["apple"]["state"] != "none":
         items += [
-            ("apple.privacy_label", "apple", "App Store Connect > App Privacy: data types and privacy policy URL for every locale", "see store/declarations.html"),
-            ("apple.age_rating", "apple", "App Information > Age Ratings questionnaire", "see store/declarations.html"),
-            ("apple.review_info", "apple", "Version > App Review Information: name, phone, email", ""),
+            ("apple.category", "apple", "App Information > Primary category (Games > Puzzle): set by app_setup.py through the API", "ship_ios.sh does it"),
+            ("apple.content_rights", "apple", "App Information > Content Rights: set by app_setup.py through the API", "ship_ios.sh does it"),
+            ("apple.age_rating", "apple", "App Information > Age Ratings questionnaire: set by app_setup.py through the API", "answers in store/declarations.html"),
+            ("apple.pricing", "apple", "Pricing and Availability > free price: set by app_setup.py through the API", "ship_ios.sh does it"),
+            ("apple.privacy_label", "apple", "App Store Connect > App Privacy: data types and privacy policy URL (no API exists for this one)", "see store/declarations.html"),
+            ("apple.review_video", "apple", "Screen recording on a physical iPhone: save its link in store/review_video_url.txt, then review_notes.py apply", "Apple rejects without it (lesson 0060)"),
+            ("apple.review_info", "apple", "App Review Information: first name, last name, email, phone (needs gf_profile.py set review_phone)", "sent automatically once a phone is set"),
             ("apple.add_for_review", "apple", "Version: Add for Review / Submit", "last step, always yours"),
         ]
     return items

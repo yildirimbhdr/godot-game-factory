@@ -6,6 +6,7 @@
 #  2. fastlane_prepare.py        regenerates <game>/fastlane (metadata + screenshots from store/listing.json and store/out), first=1.0 without "What's New"
 #  3. fastlane ios status        read-only: the app record must exist (created once by hand: New App); prints Apple's versions and builds
 #  4. ios_release.sh --upload    signed archive -> App Store Connect; then `fastlane ios wait_build` until Apple finished processing it
+#  4b. app_setup.py apply        content rights, categories, age rating, free price (API); then the build is attached to the version
 #  5. fastlane ios metadata      texts, screenshots, review notes and contact (never submits); the build is attached to the version first; the upload is recorded in store/status.json
 # --dry: steps 1 and 3 only (3 needs the API key), nothing is built or uploaded.
 # --submit: after 5, attach the build and send for review (`fastlane ios submit`). Only when YOU mean it: App Privacy, age rating and
@@ -44,6 +45,9 @@ if [ -z "$NOBUILD" ]; then
   bash "$PLUGIN_SCRIPTS/fl.sh" "$G" ios wait_build build:"$BUILD"
 fi
 
+echo; echo "== App Store Connect fields that block Add for Review (API)"
+python3 "$PLUGIN_SCRIPTS/app_setup.py" apply "$G" || { echo "app_setup failed: fix the message above"; exit 1; }
+
 echo; echo "== attach build $BUILD to the version"
 bash "$PLUGIN_SCRIPTS/fl.sh" "$G" ios attach_build build:"$BUILD"
 
@@ -61,6 +65,9 @@ fi
 
 python3 "$PLUGIN_SCRIPTS/store_declarations.py" "$G" >/dev/null
 python3 "$PLUGIN_SCRIPTS/gf_status.py" init "$G" >/dev/null
+echo; echo "== what Apple still misses (read-only check)"
+python3 "$PLUGIN_SCRIPTS/app_setup.py" check "$G" || true
+
 echo; echo "== left for you"
 python3 "$PLUGIN_SCRIPTS/gf_status.py" todo "$G"
 echo; echo "Answers for the forms: $G/store/declarations.html"
