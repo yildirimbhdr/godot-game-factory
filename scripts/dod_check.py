@@ -20,7 +20,7 @@ Checks (see skills/playtest-verify for the manual half that DOD.md records):
 import json, re, sys, time
 from pathlib import Path
 
-IGNORE_DIRS = {".godot", ".playtest", ".git", "build", "tools", "theme_src", "node_modules"}
+IGNORE_DIRS = {".godot", ".playtest", ".git", "build", "tools", "theme_src", "node_modules", "store", "fastlane"}   # store listings and fastlane copies are not game sources
 SOURCE_EXT = {".gd", ".tscn", ".tres", ".cfg", ".png", ".ogg", ".wav", ".mp3", ".ttf", ".svg"}
 
 

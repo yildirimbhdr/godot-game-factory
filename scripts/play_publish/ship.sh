@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 # One command from a finished game to a Play draft: checks, build, upload, bookkeeping, and the list of steps that stay with you.
-# usage: scripts/play_publish/ship.sh <game-folder> [--track internal|closed|production] [--notes-en TXT --notes-tr TXT] [--version X.Y.Z] [--dry]
+# usage: scripts/play_publish/ship.sh <game-folder> [--platform android|ios|both] [--track internal|closed|production] [--notes-en TXT --notes-tr TXT] [--version X.Y.Z] [--dry] [--submit]
+# --platform ios runs scripts/apple_publish/ship_ios.sh (App Store Connect via fastlane, see its header); both = Android first, then iOS. --submit only matters for iOS.
 #
 #  1. preflight   definition of done (release, Android), package names, listing, graphics, live privacy/support pages, app-ads.txt, keys
 #  2. new or update   (build, AAB check, upload) decided from store/status.json: nothing on Play yet -> publish_new.sh (site + listing + first AAB);
@@ -13,7 +14,7 @@
 set -euo pipefail
 source "$(dirname "$0")/publish_lib.sh"
 GAME="${1:?usage: ship.sh <game-folder> [--track T] [--notes-en TXT --notes-tr TXT] [--version V] [--dry]}"; shift
-TRACK=""; EN=""; TR=""; VER=""; DRY=""
+TRACK=""; EN=""; TR=""; VER=""; DRY=""; PLATFORM="android"; SUBMIT=""
 while [ $# -gt 0 ]; do
   case "$1" in
     --track) TRACK="$2"; shift 2;;
@@ -21,10 +22,13 @@ while [ $# -gt 0 ]; do
     --notes-tr) TR="$2"; shift 2;;
     --version) VER="$2"; shift 2;;
     --dry) DRY="--dry"; shift;;
+    --platform) PLATFORM="$2"; shift 2;;
+    --submit) SUBMIT="--submit"; shift;;
     *) echo "unknown option $1" >&2; exit 2;;
   esac
 done
 G="$(game_dir "$GAME")"
+if [ "$PLATFORM" = "ios" ]; then exec bash "$PLUGIN_SCRIPTS/apple_publish/ship_ios.sh" "$GAME" $DRY $SUBMIT; fi
 st() { python3 -c "import sys;sys.path.insert(0,'$PLUGIN_SCRIPTS');import gf_status;d=gf_status.load(__import__('pathlib').Path('$G'));print(d['play']['$1'])"; }
 
 echo "== 1/3 preflight ($GAME)"
@@ -57,3 +61,7 @@ python3 "$PLUGIN_SCRIPTS/gf_status.py" todo "$G"
 echo
 echo "Answers for the forms (copy buttons, tick boxes): open $G/store/declarations.html"
 echo "Tick a step when you did it:  python3 $PLUGIN_SCRIPTS/gf_status.py done $G <id>"
+if [ "$PLATFORM" = "both" ]; then
+  echo; echo "== iOS =="
+  bash "$PLUGIN_SCRIPTS/apple_publish/ship_ios.sh" "$GAME" $DRY $SUBMIT
+fi
